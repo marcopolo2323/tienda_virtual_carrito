@@ -1,0 +1,36 @@
+frontend/node_modules/
+backend/node_modules/
+
+# Ignorar carpetas de build o dist en ambas carpetas
+frontend/dist/
+frontend/build/
+backend/dist/
+backend/build/
+
+# Archivos de entorno
+frontend/.env
+frontend/.env.*
+backend/.env
+backend/.env.*
+
+# Logs
+*.log
+
+# Configuración de VS Code
+.vscode/
+
+# Archivos de lock (descomenta si no quieres versionarlos)
+# frontend/package-lock.json
+# backend/package-lock.json
+# frontend/yarn.lock
+# backend/yarn.lock
+
+# Cobertura de pruebas
+frontend/coverage/
+backend/coverage/
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
