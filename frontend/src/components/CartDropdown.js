@@ -1,12 +1,25 @@
-import React from 'react';
-import { Dropdown, Badge, Button, Image } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Dropdown, Badge, Button, Image, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import useCartStore from '../store/cartStore';
 import useAuthStore from '../store/authStore';
+import './Cart.css';
 
 const CartDropdown = () => {
   const { items, total, itemCount, loading } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [lastItemCount, setLastItemCount] = useState(0);
+
+  // Animación cuando cambia el número de items
+  useEffect(() => {
+    if (itemCount !== lastItemCount) {
+      setIsAnimating(true);
+      const timer = setTimeout(() => setIsAnimating(false), 600);
+      setLastItemCount(itemCount);
+      return () => clearTimeout(timer);
+    }
+  }, [itemCount, lastItemCount]);
   
   // Helper function para normalizar URLs de imágenes de Cloudinary
   const getImageUrl = (imageUrl) => {
@@ -30,27 +43,43 @@ const CartDropdown = () => {
     return `${baseUrl}/src/uploads/${imageUrl}`;
   };
   
-  // No mostrar el carrito si el usuario no está autenticado
-  if (!isAuthenticated) {
-    return (
-      <Link to="/login" className="btn btn-outline-primary">
-        <i className="bi bi-person"></i> Login
-      </Link>
-    );
-  }
+  // Mostrar carrito para todos los usuarios (autenticados y no autenticados)
+  // Solo redirigir a login si intentan hacer checkout sin estar autenticados
   
   return (
     <Dropdown align="end">
-      <Dropdown.Toggle variant="light" id="dropdown-cart" className="position-relative">
+      <Dropdown.Toggle 
+        variant="light" 
+        id="dropdown-cart" 
+        className={`position-relative ${isAnimating ? 'animate__animated animate__pulse' : ''}`}
+        style={{
+          transition: 'all 0.3s ease',
+          transform: isAnimating ? 'scale(1.05)' : 'scale(1)'
+        }}
+      >
         <i className="bi bi-cart"></i>
         {itemCount > 0 && (
           <Badge 
             bg="danger" 
             pill 
-            className="position-absolute top-0 start-100 translate-middle"
+            className={`position-absolute top-0 start-100 translate-middle ${
+              isAnimating ? 'animate__animated animate__bounce' : ''
+            }`}
+            style={{
+              transition: 'all 0.3s ease',
+              transform: isAnimating ? 'scale(1.2)' : 'scale(1)'
+            }}
           >
             {itemCount}
           </Badge>
+        )}
+        {loading && (
+          <Spinner 
+            animation="border" 
+            size="sm" 
+            className="ms-2"
+            style={{ width: '1rem', height: '1rem' }}
+          />
         )}
       </Dropdown.Toggle>
 
@@ -67,9 +96,9 @@ const CartDropdown = () => {
           
           {items.length > 0 ? (
             <>
-              <div className="cart-items-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <div className="cart-items-container">
                 {items.slice(0, 3).map(item => (
-                  <div key={item.product?.id || item.id} className="cart-item d-flex align-items-center mb-2">
+                  <div key={item.product?.id || item.id} className="cart-item d-flex align-items-center mb-2 cart-item-enter">
                     <div className="cart-item-img me-2">
                       <Image 
                         src={getImageUrl(item.product?.image_url)} 
@@ -112,15 +141,23 @@ const CartDropdown = () => {
               
               <div className="d-grid gap-2">
                 <Link to="/cart">
-                  <Button variant="outline-primary" className="w-100">
+                  <Button variant="outline-primary" className="w-100 cart-btn">
                     Ver Carrito ({itemCount})
                   </Button>
                 </Link>
-                <Link to="/checkout">
-                  <Button variant="primary" className="w-100">
-                    Ir al Checkout
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <Link to="/checkout">
+                    <Button variant="primary" className="w-100 cart-btn checkout-btn">
+                      Ir al Checkout
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button variant="primary" className="w-100 cart-btn checkout-btn">
+                      Iniciar Sesión para Comprar
+                    </Button>
+                  </Link>
+                )}
               </div>
             </>
           ) : (

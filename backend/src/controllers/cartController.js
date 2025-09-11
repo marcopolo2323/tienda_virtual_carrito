@@ -94,9 +94,7 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // OPCIONAL: Devolver el carrito completo actualizado
-    // Si descomentas esto, el frontend no necesitará hacer fetchCart()
-    /*
+    // Devolver el carrito completo actualizado
     const updatedCart = await Cart.findByPk(cart.id, {
       include: [
         {
@@ -115,9 +113,6 @@ const addToCart = async (req, res) => {
       items: updatedCart.CartItems,
       total: parseFloat(total.toFixed(2))
     });
-    */
-
-    return successResponse(res, 'Producto añadido al carrito', cartItem);
   } catch (error) {
     logger.error('Error al añadir al carrito', { 
       error: error.message, 
@@ -180,7 +175,25 @@ const updateCartItem = async (req, res) => {
     cartItem.price = product.price; // Actualizar precio por si ha cambiado
     await cartItem.save();
 
-    return successResponse(res, 'Carrito actualizado', cartItem);
+    // Devolver el carrito completo actualizado
+    const updatedCart = await Cart.findByPk(cart.id, {
+      include: [
+        {
+          model: CartItem,
+          include: [Product]
+        }
+      ]
+    });
+
+    const total = updatedCart.CartItems.reduce((sum, item) => {
+      return sum + (item.price * item.quantity);
+    }, 0);
+
+    return successResponse(res, 'Carrito actualizado', {
+      id: updatedCart.id,
+      items: updatedCart.CartItems,
+      total: parseFloat(total.toFixed(2))
+    });
   } catch (error) {
     logger.error('Error al actualizar carrito', { 
       error: error.message, 
@@ -223,7 +236,25 @@ const removeFromCart = async (req, res) => {
       return errorResponse(res, 'Producto no encontrado en el carrito', 404);
     }
 
-    return successResponse(res, 'Producto eliminado del carrito');
+    // Devolver el carrito completo actualizado
+    const updatedCart = await Cart.findByPk(cart.id, {
+      include: [
+        {
+          model: CartItem,
+          include: [Product]
+        }
+      ]
+    });
+
+    const total = updatedCart.CartItems.reduce((sum, item) => {
+      return sum + (item.price * item.quantity);
+    }, 0);
+
+    return successResponse(res, 'Producto eliminado del carrito', {
+      id: updatedCart.id,
+      items: updatedCart.CartItems,
+      total: parseFloat(total.toFixed(2))
+    });
   } catch (error) {
     logger.error('Error al eliminar del carrito', { 
       error: error.message, 

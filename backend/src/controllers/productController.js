@@ -553,11 +553,50 @@ const getFeaturedProducts = async (req, res) => {
   }
 };
 
+// Validar stock de productos
+const validateStock = async (req, res) => {
+  try {
+    const { productIds } = req.body;
+    
+    if (!productIds || !Array.isArray(productIds)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Se requiere un array de IDs de productos'
+      });
+    }
+
+    const products = await Product.findAll({
+      where: { id: productIds },
+      attributes: ['id', 'name', 'stock', 'price']
+    });
+
+    const stockData = products.map(product => ({
+      id: product.id,
+      name: product.name,
+      stock: product.stock,
+      price: parseFloat(product.price)
+    }));
+
+    res.json({
+      success: true,
+      products: stockData
+    });
+  } catch (error) {
+    console.error('Error validating stock:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error al validar stock',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getFeaturedProducts,
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  validateStock
 };

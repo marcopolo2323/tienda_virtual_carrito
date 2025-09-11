@@ -126,7 +126,7 @@ const useProductStore = create((set) => ({
   },
   
   fetchFeaturedProducts: async (limit = 4) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const response = await axios.get(`/products/featured?limit=${limit}`);
       
@@ -159,12 +159,29 @@ const useProductStore = create((set) => ({
       return normalizedFeaturedProducts;
     } catch (err) {
       console.error('Error fetching featured products:', err);
+      
+      // Manejar diferentes tipos de errores
+      let errorMessage = 'Failed to fetch featured products';
+      
+      if (err.code === 'ERR_NETWORK' || err.message.includes('Network Error')) {
+        errorMessage = 'No se pudo conectar al servidor. Verifica que el backend esté ejecutándose.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'Productos destacados no encontrados';
+      } else if (err.response?.status >= 500) {
+        errorMessage = 'Error del servidor. Intenta más tarde.';
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
       set({
         loading: false,
-        featuredProducts: [],
-        error: err.response?.data?.message || 'Failed to fetch featured products'
+        featuredProducts: [], // Mantener array vacío en caso de error
+        error: errorMessage
       });
-      throw err;
+      
+      // No hacer throw del error para evitar crashes
+      console.warn('⚠️ Productos destacados no disponibles:', errorMessage);
+      return [];
     }
   },
   

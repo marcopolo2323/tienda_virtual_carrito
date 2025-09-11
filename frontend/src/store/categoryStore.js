@@ -9,7 +9,7 @@ const useCategoryStore = create((set) => ({
   
   // Acciones
   fetchCategories: async () => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const response = await axios.get('/categories');
       console.log('🔍 CategoryStore - Full response:', response.data);
@@ -24,11 +24,29 @@ const useCategoryStore = create((set) => ({
       return response.data.categories;
     } catch (err) {
       console.error('❌ CategoryStore error:', err);
+      
+      // Manejar diferentes tipos de errores
+      let errorMessage = 'Failed to fetch categories';
+      
+      if (err.code === 'ERR_NETWORK' || err.message.includes('Network Error')) {
+        errorMessage = 'No se pudo conectar al servidor. Verifica que el backend esté ejecutándose.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'Endpoint de categorías no encontrado';
+      } else if (err.response?.status >= 500) {
+        errorMessage = 'Error del servidor. Intenta más tarde.';
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      }
+      
       set({
         loading: false,
-        error: err.response?.data?.message || 'Failed to fetch categories'
+        error: errorMessage,
+        categories: [] // Limpiar categorías en caso de error
       });
-      throw err;
+      
+      // No hacer throw del error para evitar crashes
+      console.warn('⚠️ Categorías no disponibles:', errorMessage);
+      return [];
     }
   },
   

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Op } = require('sequelize');
-const { sequelize } = require('../config/database');
+const { Op, QueryTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 // Importar utilidades de manejo de errores
 const { 
@@ -24,27 +24,15 @@ const {
   CartItem
 } = require('../models');
 
-// Middleware de autenticación admin
-const requireAuth = (req, res, next) => {
-  // Verificar si el usuario existe en la solicitud (debería ser agregado por el middleware authenticate)
-  if (!req.user) {
-    return sendErrorResponse(res, handleForbiddenError('Acceso no autorizado'));
-  }
-  
-  // Verificar si el usuario es administrador
-  if (req.user.role !== 'admin') {
-    return sendErrorResponse(res, handleForbiddenError('Se requieren permisos de administrador'));
-  }
-  
-  next();
-};
+// Importar middlewares de autenticación
+const { authenticate, isAdmin } = require('../middlewares/auth');
 
 /**
  * @route   GET /api/admin/dashboard
  * @desc    Obtener datos principales para el dashboard de administración
  * @access  Admin
  */
-router.get('/dashboard', requireAuth, async (req, res) => {
+router.get('/dashboard', authenticate, isAdmin, async (req, res) => {
   try {
     // Ejecutar consultas en paralelo para mejorar el rendimiento
     const [
@@ -71,7 +59,7 @@ router.get('/dashboard', requireAuth, async (req, res) => {
         FROM orders 
         WHERE status IN ('completed', 'delivered', 'shipped')
       `, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       }),
       
       // 5. Órdenes recientes (últimas 5)
@@ -166,7 +154,7 @@ router.get('/dashboard', requireAuth, async (req, res) => {
     `;
     
     const topProducts = await sequelize.query(topProductsQuery, {
-      type: sequelize.QueryTypes.SELECT
+      type: QueryTypes.SELECT
     });
     
     // Formatear productos más vendidos
@@ -202,7 +190,7 @@ router.get('/dashboard', requireAuth, async (req, res) => {
  * @desc    Obtener lista de usuarios con paginación y filtros
  * @access  Admin
  */
-router.get('/users', requireAuth, async (req, res) => {
+router.get('/users', authenticate, isAdmin, async (req, res) => {
   try {
     const { 
       page = 1, 
@@ -300,7 +288,7 @@ router.get('/users', requireAuth, async (req, res) => {
  * @desc    Obtener lista de órdenes con paginación y filtros
  * @access  Admin
  */
-router.get('/orders', requireAuth, async (req, res) => {
+router.get('/orders', authenticate, isAdmin, async (req, res) => {
   try {
     const { 
       page = 1, 
@@ -445,7 +433,7 @@ router.get('/orders', requireAuth, async (req, res) => {
  * @desc    Actualizar estado de una orden
  * @access  Admin
  */
-router.put('/orders/:id/status', requireAuth, async (req, res) => {
+router.put('/orders/:id/status', authenticate, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -498,7 +486,7 @@ router.put('/orders/:id/status', requireAuth, async (req, res) => {
  * @desc    Obtener lista de productos con paginación y filtros
  * @access  Admin
  */
-router.get('/products', requireAuth, async (req, res) => {
+router.get('/products', authenticate, isAdmin, async (req, res) => {
   try {
     const { 
       page = 1, 
@@ -665,7 +653,7 @@ router.get('/products', requireAuth, async (req, res) => {
  * @desc    Generar reporte de ventas con filtros por fecha
  * @access  Admin
  */
-router.get('/reports/sales', requireAuth, async (req, res) => {
+router.get('/reports/sales', authenticate, isAdmin, async (req, res) => {
   try {
     const { start_date, end_date, time_range, category_id } = req.query;
     
@@ -751,16 +739,16 @@ router.get('/reports/sales', requireAuth, async (req, res) => {
     // Ejecutar consultas en paralelo para mejor rendimiento
     const [dailySales, totals, revenueByPaymentMethod, orderStatus] = await Promise.all([
       sequelize.query(dailySalesQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       }),
       sequelize.query(totalsQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       }),
       sequelize.query(paymentMethodsQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       }),
       sequelize.query(orderStatusQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       })
     ]);
 
@@ -809,7 +797,7 @@ router.get('/reports/sales', requireAuth, async (req, res) => {
  * @desc    Generar reporte de productos con filtros
  * @access  Admin
  */
-router.get('/reports/products', requireAuth, async (req, res) => {
+router.get('/reports/products', authenticate, isAdmin, async (req, res) => {
   try {
     const { 
       start_date, 
@@ -948,9 +936,9 @@ router.get('/reports/products', requireAuth, async (req, res) => {
 
     // Ejecutar consultas en paralelo para mejor rendimiento
     const [topProducts, lowStockProducts, noSalesProducts] = await Promise.all([
-      sequelize.query(topProductsQuery, { type: sequelize.QueryTypes.SELECT }),
-      sequelize.query(lowStockQuery, { type: sequelize.QueryTypes.SELECT }),
-      sequelize.query(noSalesQuery, { type: sequelize.QueryTypes.SELECT })
+      sequelize.query(topProductsQuery, { type: QueryTypes.SELECT }),
+      sequelize.query(lowStockQuery, { type: QueryTypes.SELECT }),
+      sequelize.query(noSalesQuery, { type: QueryTypes.SELECT })
     ]);
 
     // Formatear datos para mejorar la presentación
@@ -1014,7 +1002,7 @@ router.get('/reports/products', requireAuth, async (req, res) => {
  * @desc    Generar reporte de ventas por categoría con filtros por fecha
  * @access  Admin
  */
-router.get('/reports/categories', requireAuth, async (req, res) => {
+router.get('/reports/categories', authenticate, isAdmin, async (req, res) => {
   try {
     const { start_date, end_date } = req.query;
     
@@ -1131,10 +1119,10 @@ router.get('/reports/categories', requireAuth, async (req, res) => {
     // Ejecutar consultas en paralelo para mejor rendimiento
     const [categoriesReport, topProductsByCategory] = await Promise.all([
       sequelize.query(categoriesReportQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       }),
       sequelize.query(topProductsByCategoryQuery, {
-        type: sequelize.QueryTypes.SELECT
+        type: QueryTypes.SELECT
       })
     ]);
     
