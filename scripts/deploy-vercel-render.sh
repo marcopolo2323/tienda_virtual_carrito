@@ -49,17 +49,26 @@ fi
 # 1. Configurar Frontend para Vercel
 log "Configurando frontend para Vercel..."
 
-# Crear archivo .env.local para Vercel
-if [ ! -f "frontend/.env.local" ]; then
-    log "Creando archivo .env.local para Vercel..."
-    cat > frontend/.env.local << EOF
-# Configuración para Vercel
-REACT_APP_API_BASE_URL=https://tu-backend-en-render.onrender.com/api
-REACT_APP_NAME=Tienda Virtual
-REACT_APP_VERSION=1.0.0
-EOF
-    warn "Por favor actualiza REACT_APP_API_BASE_URL con tu URL real de Render"
+# Verificar que Vercel CLI esté instalado
+if ! command -v vercel &> /dev/null; then
+    log "Instalando Vercel CLI..."
+    npm install -g vercel
 fi
+
+# Verificar variables de entorno en Vercel
+log "Verificando variables de entorno en Vercel..."
+vercel env ls 2>/dev/null || warn "No se pudieron obtener las variables de entorno"
+
+# Mostrar instrucciones para configurar variables
+info "📋 IMPORTANTE: Configura estas variables en Vercel:"
+info "1. Ve a https://vercel.com/dashboard"
+info "2. Selecciona tu proyecto"
+info "3. Ve a Settings → Environment Variables"
+info "4. Agrega:"
+info "   - REACT_APP_API_BASE_URL: https://tienda-diego-qkm5.onrender.com"
+info "   - REACT_APP_NAME: Tienda Virtual"
+info "   - REACT_APP_VERSION: 1.0.0"
+info "5. Haz un nuevo deployment después de configurar las variables"
 
 # Build del frontend
 log "Construyendo frontend..."
