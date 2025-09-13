@@ -21,6 +21,24 @@ const apiClient = axios.create({
   }
 });
 
+// Función para hacer peticiones con URL base forzada
+const makeRequest = (method, url, data = null, config = {}) => {
+  const fullUrl = url.startsWith('/api/') ? url : `/api${url.startsWith('/') ? '' : '/'}${url}`;
+  const fullConfig = {
+    ...config,
+    baseURL: getApiBaseUrl(),
+    url: fullUrl,
+    method: method.toLowerCase()
+  };
+  
+  if (data) {
+    fullConfig.data = data;
+  }
+  
+  console.log('🌐 Petición forzada:', method.toUpperCase(), getApiBaseUrl() + fullUrl);
+  return apiClient(fullConfig);
+};
+
 // Debug: mostrar la URL base configurada
 console.log('🔧 API Client baseURL configurada:', apiClient.defaults.baseURL);
 console.log('🔧 NODE_ENV:', process.env.NODE_ENV);
@@ -62,4 +80,13 @@ apiClient.interceptors.response.use(
   }
 );
 
-export default apiClient;
+// Métodos de conveniencia
+const api = {
+  get: (url, config = {}) => makeRequest('GET', url, null, config),
+  post: (url, data, config = {}) => makeRequest('POST', url, data, config),
+  put: (url, data, config = {}) => makeRequest('PUT', url, data, config),
+  delete: (url, config = {}) => makeRequest('DELETE', url, null, config),
+  patch: (url, data, config = {}) => makeRequest('PATCH', url, data, config)
+};
+
+export default api;
