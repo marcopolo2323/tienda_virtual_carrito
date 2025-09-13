@@ -138,14 +138,12 @@ app.get('/', (req, res) => {
 });
 
 // Ruta de seeding de la base de datos
-  app.get('/api/seed', async (req, res) => {
+    app.get('/api/seed', async (req, res) => {
     try {
       console.log('🌱 Iniciando seeding de la base de datos...');
       
-      // Importar el seeder
-      const seedDatabase = require('./../scripts/seed');
-      
-      // Ejecutar el seeding
+      // Corregir la ruta del import
+      const seedDatabase = require('./utils/seedDatabase');
       await seedDatabase();
       
       console.log('✅ Seeding completado exitosamente');
