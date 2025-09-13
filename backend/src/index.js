@@ -13,6 +13,7 @@ require('dotenv').config();
 // Importar conexión a la base de datos
 const { sequelize } = require('./models/index');
 
+
 // Importar rutas directamente
 const productsRoutes = require('./routes/products');
 const authRoutes = require('./routes/auth');
@@ -179,7 +180,7 @@ if (isDev) {
       console.log('🌱 Iniciando seeding de la base de datos...');
       
       // Importar el seeder
-      const seedDatabase = require('./utils/seeder');
+      const seedDatabase = require('./../scripts/seed');
       
       // Ejecutar el seeding
       await seedDatabase();
