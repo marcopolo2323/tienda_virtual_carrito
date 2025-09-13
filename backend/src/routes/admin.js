@@ -27,8 +27,8 @@ const {
 // Importar middlewares de autenticación
 const { authenticate, isAdmin } = require('../middlewares/auth');
 
-// Importar rutas de admin para banners
-const adminBannersRoutes = require('./adminBanners');
+// Importar rutas de banners
+const bannersRoutes = require('./banners');
 
 /**
  * @route   GET /api/admin/dashboard
@@ -1179,7 +1179,7 @@ router.get('/reports/categories', authenticate, isAdmin, async (req, res) => {
   }
 });
 
-// Registrar rutas de admin para banners
-router.use('/banners', adminBannersRoutes);
+// Registrar rutas de banners
+router.use('/banners', bannersRoutes);
 
 module.exports = router;
