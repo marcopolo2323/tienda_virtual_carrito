@@ -95,7 +95,7 @@ const seedProducts = async () => {
         category_id: electronics.id,
         sku: 'SPHONE-001',
         weight: 0.18,
-        dimensions: '15.5 x 7.5 x 0.8 cm'
+        dimensions: '15.5 x 7.5 x 0.8' // ✅ SIN "cm"
       },
       {
         name: 'Laptop Pro',
@@ -107,7 +107,7 @@ const seedProducts = async () => {
         category_id: electronics.id,
         sku: 'LAPTOP-001',
         weight: 1.4,
-        dimensions: '30.4 x 21.2 x 1.6 cm'
+        dimensions: '30.4 x 21.2 x 1.6' // ✅ SIN "cm"
       },
       {
         name: 'Wireless Headphones',
@@ -119,7 +119,7 @@ const seedProducts = async () => {
         category_id: electronics.id,
         sku: 'HEAD-001',
         weight: 0.25,
-        dimensions: '19 x 16 x 8 cm'
+        dimensions: '19 x 16 x 8' // ✅ SIN "cm"
       },
       {
         name: 'Men\'s T-Shirt',
@@ -131,7 +131,7 @@ const seedProducts = async () => {
         category_id: clothing.id,
         sku: 'TSHIRT-M-001',
         weight: 0.15,
-        dimensions: '70 x 50 x 1 cm'
+        dimensions: '70 x 50 x 1' // ✅ SIN "cm"
       },
       {
         name: 'Women\'s Jeans',
@@ -143,7 +143,7 @@ const seedProducts = async () => {
         category_id: clothing.id,
         sku: 'JEANS-W-001',
         weight: 0.45,
-        dimensions: '100 x 40 x 2 cm'
+        dimensions: '100 x 40 x 2' // ✅ SIN "cm"
       },
       {
         name: 'Programming Guide',
@@ -155,7 +155,7 @@ const seedProducts = async () => {
         category_id: books.id,
         sku: 'BOOK-PROG-001',
         weight: 0.8,
-        dimensions: '24 x 17 x 3 cm'
+        dimensions: '24 x 17 x 3' // ✅ SIN "cm"
       },
       {
         name: 'Coffee Maker',
@@ -167,7 +167,7 @@ const seedProducts = async () => {
         category_id: homeKitchen.id,
         sku: 'COFFEE-001',
         weight: 2.5,
-        dimensions: '25 x 20 x 30 cm'
+        dimensions: '25 x 20 x 30' // ✅ SIN "cm"
       },
       {
         name: 'Yoga Mat',
@@ -179,7 +179,7 @@ const seedProducts = async () => {
         category_id: sportsOutdoors.id,
         sku: 'YOGA-MAT-001',
         weight: 1.2,
-        dimensions: '183 x 61 x 0.6 cm'
+        dimensions: '183 x 61 x 0.6' // ✅ SIN "cm"
       }
     ];
     
@@ -209,7 +209,8 @@ const seedBanners = async () => {
       {
         title: 'Welcome to Our Store',
         description: 'Discover amazing products at unbeatable prices. Shop now and save big!',
-        image_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=400&fit=crop',
+        // ✅ URLs más simples y confiables
+        image_url: 'https://picsum.photos/1200/400?random=1',
         link_url: '/products',
         button_text: 'Shop Now',
         active: true,
@@ -218,7 +219,7 @@ const seedBanners = async () => {
       {
         title: 'Summer Sale',
         description: 'Up to 50% off on summer collection. Limited time offer!',
-        image_url: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200&h=400&fit=crop',
+        image_url: 'https://picsum.photos/1200/400?random=2',
         link_url: '/products?sale=true',
         button_text: 'View Sale',
         active: true,
@@ -227,7 +228,7 @@ const seedBanners = async () => {
       {
         title: 'New Electronics Collection',
         description: 'Latest gadgets and electronics now available. Technology at its finest!',
-        image_url: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=1200&h=400&fit=crop',
+        image_url: 'https://picsum.photos/1200/400?random=3',
         link_url: '/products?category=electronics',
         button_text: 'Explore Tech',
         active: true,
