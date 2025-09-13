@@ -9,6 +9,9 @@ import './App.css';
 import useAuthStore from './store/authStore';
 import useCartStore from './store/cartStore';
 
+// Components
+import ConnectionStatus from './components/ConnectionStatus';
+
 // Layouts
 import MainLayout from './components/layouts/MainLayout';
 
@@ -45,11 +48,11 @@ import AdminRoute from './components/utils/AdminRoute';
 
 function App() {
   const { initializeAuth, loading: authLoading } = useAuthStore();
-  const { fetchCart } = useCartStore();
+  const { initializeCart, syncOnReconnect } = useCartStore();
   const [appInitialized, setAppInitialized] = useState(false);
 
   useEffect(() => {
-    // Inicializar autenticación y luego cargar el carrito si el usuario está logueado
+    // Inicializar autenticación y carrito automáticamente
     const initApp = async () => {
       console.log('🚀 Inicializando aplicación...');
       
@@ -58,25 +61,32 @@ function App() {
         const user = await initializeAuth();
         
         if (user) {
-          console.log('✅ Usuario autenticado:', user.email);
-          console.log('🛒 Cargando carrito del usuario...');
-          
-          // Esperar a que se cargue el carrito
-          await fetchCart();
-          console.log('✅ Carrito cargado exitosamente');
+          // Usuario autenticado
         } else {
-          console.log('ℹ️ Usuario no autenticado');
+          // Usuario no autenticado
         }
+        
+        // Inicializar carrito automáticamente (maneja usuarios autenticados y no autenticados)
+        // Inicializando carrito
+        await initializeCart();
+        // Carrito inicializado exitosamente
+        
       } catch (error) {
         console.error('❌ Error inicializando app:', error);
       } finally {
         setAppInitialized(true);
-        console.log('✅ Aplicación inicializada completamente');
+        // Aplicación inicializada completamente
       }
     };
 
     initApp();
-  }, [initializeAuth, fetchCart]);
+  }, [initializeAuth, initializeCart]);
+
+  // Configurar sincronización automática en reconexión
+  useEffect(() => {
+    const cleanup = syncOnReconnect();
+    return cleanup;
+  }, [syncOnReconnect]);
 
   // Mostrar loader mientras se inicializa la app
   if (!appInitialized || authLoading) {
@@ -94,13 +104,14 @@ function App() {
   
   return (
     <Router>
+      <ConnectionStatus />
       <MainLayout>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -124,6 +135,7 @@ function App() {
           {/* ✅ Rutas de Banners */}
           <Route path="/admin/banners" element={<AdminRoute><AdminBannersPage /></AdminRoute>} />
           <Route path="/admin/banners/new" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
+          <Route path="/admin/banners/create" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
           <Route path="/admin/banners/edit/:id" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
           
           <Route path="/admin/orders" element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />

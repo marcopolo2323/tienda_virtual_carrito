@@ -82,3 +82,11 @@
 [2025-08-28T23:25:04.219Z] [INFO] Product 'Programming Guide' created successfully with SKU: BOOK-PROG-001 
 [2025-08-28T23:25:04.244Z] [INFO] Product 'Coffee Maker' created successfully with SKU: COFFEE-001 
 [2025-08-28T23:25:04.301Z] [INFO] Product 'Yoga Mat' created successfully with SKU: YOGA-MAT-001 
+[2025-09-11T15:44:41.221Z] [INFO] Database synchronized 
+[2025-09-11T15:44:41.436Z] [INFO] Admin user created successfully 
+[2025-09-11T15:44:41.572Z] [INFO] Category 'Electronics' created successfully 
+[2025-09-11T15:44:41.628Z] [INFO] Category 'Clothing' created successfully 
+[2025-09-11T15:44:41.663Z] [INFO] Category 'Books' created successfully 
+[2025-09-11T15:44:41.710Z] [INFO] Category 'Home & Kitchen' created successfully 
+[2025-09-11T15:44:41.746Z] [INFO] Category 'Sports & Outdoors' created successfully 
+[2025-09-11T15:44:41.792Z] [ERROR] Error seeding products {"error":"Validation error: Las dimensiones deben tener el formato: largo x ancho x alto","stack":"SequelizeValidationError: Validation error: Las dimensiones deben tener el formato: largo x ancho x alto\n    at InstanceValidator._validate (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async InstanceValidator._validateAndRunHooks (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Product.save (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/model.js:2426:7)\n    at async Product.create (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/model.js:1362:12)\n    at async Product.findOrCreate (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/node_modules/sequelize/lib/model.js:1422:25)\n    at async seedProducts (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/src/utils/seedDatabase.js:187:40)\n    at async seedDatabase (/home/lloyd/Escritorio/tiendita/tienda_virtual_carrito/backend/src/utils/seedDatabase.js:267:5)"}

@@ -1,43 +1,27 @@
-// services/bannerService.js - Servicio para conectar con la axios de banners
-import axios from '../utils/axios';
+import axios from 'axios';
 
 class BannerService {
-  
-  // Métodos públicos (frontend)
-  async getActiveBanners() {
-    try {
-      const response = await axios.get('/banners/active');
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch active banners');
-    }
-  }
-
-  // Métodos admin
-  async getBanners(page = 1, limit = 10, activeFilter = null) {
-    try {
-      const params = {
-        page,
-        limit,
-        ...(activeFilter !== null && { active: activeFilter })
-      };
-      
-      const response = await axios.get('/admin/banners', { params });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch banners');
-    }
-  }
-
+  // Crear banner
   async createBanner(bannerData) {
     try {
-      // Crear FormData para manejar archivo de imagen
-      const formData = new FormData();
+      // Si bannerData ya es FormData, usarlo directamente
+      if (bannerData instanceof FormData) {
+        const response = await axios.post('/admin/banners', bannerData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return response.data;
+      }
       
-      // Agregar campos de texto
+      // Si no es FormData, construir uno nuevo
+      const formData = new FormData();
       formData.append('title', bannerData.title);
       formData.append('description', bannerData.description);
+      formData.append('active', bannerData.active);
+      formData.append('display_order', bannerData.display_order);
       
+      // Campos opcionales
       if (bannerData.link_url) {
         formData.append('link_url', bannerData.link_url);
       }
@@ -46,10 +30,7 @@ class BannerService {
         formData.append('button_text', bannerData.button_text);
       }
       
-      formData.append('active', bannerData.active !== undefined ? bannerData.active : true);
-      formData.append('display_order', bannerData.display_order || 0);
-      
-      // Agregar imagen si existe
+      // Imagen
       if (bannerData.image) {
         formData.append('image', bannerData.image);
       }
@@ -62,30 +43,44 @@ class BannerService {
       
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to create banner');
+      throw new Error(error.response?.data?.message || 'Error al crear el banner');
     }
   }
 
+  // Obtener banners (admin)
+  async getBanners(page = 1, limit = 10) {
+    try {
+      const response = await axios.get(`/admin/banners?page=${page}&limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Error al obtener los banners');
+    }
+  }
+
+  // Obtener banners activos (público)
+  async getActiveBanners() {
+    try {
+      const response = await axios.get('/banners/active');
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Error al obtener los banners activos');
+    }
+  }
+
+  // Actualizar banner
   async updateBanner(id, bannerData) {
     try {
       const formData = new FormData();
       
-      // Agregar campos de texto
-      formData.append('title', bannerData.title);
-      formData.append('description', bannerData.description);
+      // Campos que pueden actualizarse
+      if (bannerData.title) formData.append('title', bannerData.title);
+      if (bannerData.description) formData.append('description', bannerData.description);
+      if (bannerData.link_url) formData.append('link_url', bannerData.link_url);
+      if (bannerData.button_text) formData.append('button_text', bannerData.button_text);
+      if (bannerData.active !== undefined) formData.append('active', bannerData.active);
+      if (bannerData.display_order !== undefined) formData.append('display_order', bannerData.display_order);
       
-      if (bannerData.link_url) {
-        formData.append('link_url', bannerData.link_url);
-      }
-      
-      if (bannerData.button_text) {
-        formData.append('button_text', bannerData.button_text);
-      }
-      
-      formData.append('active', bannerData.active !== undefined ? bannerData.active : true);
-      formData.append('display_order', bannerData.display_order || 0);
-      
-      // Solo agregar imagen si se seleccionó una nueva
+      // Nueva imagen (opcional)
       if (bannerData.image) {
         formData.append('image', bannerData.image);
       }
@@ -98,36 +93,20 @@ class BannerService {
       
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to update banner');
+      throw new Error(error.response?.data?.message || 'Error al actualizar el banner');
     }
   }
 
+  // Eliminar banner
   async deleteBanner(id) {
     try {
       const response = await axios.delete(`/admin/banners/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to delete banner');
-    }
-  }
-
-  async toggleBannerStatus(id, active) {
-    try {
-      const response = await axios.put(`/admin/banners/${id}/status`, { active });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to update banner status');
-    }
-  }
-
-  async reorderBanners(orderArray) {
-    try {
-      const response = await axios.put('/admin/banners/reorder', { order: orderArray });
-      return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to reorder banners');
+      throw new Error(error.response?.data?.message || 'Error al eliminar el banner');
     }
   }
 }
 
-export default new BannerService();
+const bannerService = new BannerService();
+export default bannerService;

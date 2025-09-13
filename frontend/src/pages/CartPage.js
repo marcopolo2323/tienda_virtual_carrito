@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Form, Alert, Spinner } from 'react-bootstrap';
 import useCartStore from '../store/cartStore';
 import useAuthStore from '../store/authStore';
+import '../components/Cart.css';
 
 const CartPage = () => {
   const { items, itemCount, total, loading, updateCartItem, removeFromCart, clearCart } = useCartStore();
@@ -11,6 +12,8 @@ const CartPage = () => {
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
   const [couponSuccess, setCouponSuccess] = useState('');
+  const [removingItem, setRemovingItem] = useState(null);
+  const [updatingItem, setUpdatingItem] = useState(null);
 
   // Helper function para normalizar URLs de imágenes de Cloudinary
   const getImageUrl = (imageUrl) => {
@@ -34,13 +37,23 @@ const CartPage = () => {
     return `${baseUrl}/uploads/${imageUrl}`;
   };
 
-  const handleQuantityChange = (productId, quantity) => {
+  const handleQuantityChange = async (productId, quantity) => {
     if (quantity < 1) return;
-    updateCartItem(productId, quantity);
+    setUpdatingItem(productId);
+    try {
+      await updateCartItem(productId, quantity);
+    } finally {
+      setUpdatingItem(null);
+    }
   };
 
-  const handleRemoveItem = (productId) => {
-    removeFromCart(productId);
+  const handleRemoveItem = async (productId) => {
+    setRemovingItem(productId);
+    try {
+      await removeFromCart(productId);
+    } finally {
+      setRemovingItem(null);
+    }
   };
 
   const handleClearCart = () => {
@@ -117,7 +130,7 @@ const CartPage = () => {
               </Card.Header>
               <Card.Body>
                 {items.map(item => (
-                  <div key={item.product_id} className="cart-item mb-3">
+                  <div key={item.product_id} className="cart-item mb-3 cart-item-enter">
                     <Row className="align-items-center">
                       <Col xs={3} sm={2}>
                         <img 
@@ -145,9 +158,17 @@ const CartPage = () => {
                             variant="outline-secondary" 
                             size="sm"
                             onClick={() => handleQuantityChange(item.product_id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
+                            disabled={item.quantity <= 1 || updatingItem === item.product_id}
+                            style={{ 
+                              minWidth: '32px',
+                              transition: 'all 0.2s ease'
+                            }}
                           >
-                            -
+                            {updatingItem === item.product_id ? (
+                              <Spinner animation="border" size="sm" />
+                            ) : (
+                              '-'
+                            )}
                           </Button>
                           <Form.Control 
                             type="number" 
@@ -156,14 +177,23 @@ const CartPage = () => {
                             onChange={(e) => handleQuantityChange(item.product_id, parseInt(e.target.value, 10))}
                             className="mx-2 text-center"
                             style={{ width: '60px' }}
+                            disabled={updatingItem === item.product_id}
                           />
                           <Button 
                             variant="outline-secondary" 
                             size="sm"
                             onClick={() => handleQuantityChange(item.product_id, item.quantity + 1)}
-                            disabled={item.quantity >= item.stock}
+                            disabled={item.quantity >= item.stock || updatingItem === item.product_id}
+                            style={{ 
+                              minWidth: '32px',
+                              transition: 'all 0.2s ease'
+                            }}
                           >
-                            +
+                            {updatingItem === item.product_id ? (
+                              <Spinner animation="border" size="sm" />
+                            ) : (
+                              '+'
+                            )}
                           </Button>
                         </div>
                       </Col>
@@ -177,8 +207,17 @@ const CartPage = () => {
                           variant="link" 
                           className="text-danger p-0" 
                           onClick={() => handleRemoveItem(item.product_id)}
+                          disabled={removingItem === item.product_id}
+                          style={{ 
+                            transition: 'all 0.2s ease',
+                            opacity: removingItem === item.product_id ? 0.6 : 1
+                          }}
                         >
-                          <i className="bi bi-trash"></i>
+                          {removingItem === item.product_id ? (
+                            <Spinner animation="border" size="sm" />
+                          ) : (
+                            <i className="bi bi-trash"></i>
+                          )}
                         </Button>
                       </Col>
                     </Row>
@@ -196,7 +235,7 @@ const CartPage = () => {
 
           {/* Order Summary */}
           <Col lg={4}>
-            <Card className="mb-4">
+            <Card className="mb-4 order-summary">
               <Card.Header>Order Summary</Card.Header>
               <Card.Body>
                 <div className="d-flex justify-content-between mb-2">
@@ -212,7 +251,7 @@ const CartPage = () => {
                   <span>Calculated at checkout</span>
                 </div>
                 <hr />
-                <div className="d-flex justify-content-between mb-3 fw-bold">
+                <div className="d-flex justify-content-between mb-3 fw-bold total">
                   <span>Total:</span>
                   <span>${total.toFixed(2)}</span>
                 </div>
@@ -220,10 +259,10 @@ const CartPage = () => {
                 <Button 
                   variant="primary" 
                   size="lg" 
-                  className="w-100 mb-3"
+                  className="w-100 mb-3 checkout-btn"
                   onClick={handleCheckout}
                 >
-                  Proceed to Checkout
+                  {isAuthenticated ? 'Proceed to Checkout' : 'Login to Checkout'}
                 </Button>
 
                 <div className="text-center">

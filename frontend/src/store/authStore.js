@@ -17,10 +17,10 @@ const useAuthStore = create((set, get) => ({
       set({ token, isAuthenticated: false, loading: true }); // loading true mientras verificamos
       const user = await get().checkUserLoggedIn();
       
-      // Después de verificar la autenticación, cargar el carrito
+      // Después de verificar la autenticación, inicializar el carrito
       if (user) {
         const cartStore = require('./cartStore').default.getState();
-        await cartStore.fetchCart();
+        await cartStore.initializeCart();
       }
       
       return user;
@@ -40,6 +40,7 @@ const useAuthStore = create((set, get) => ({
       }
 
       const response = await axios.get('/auth/profile');
+      console.log('🔍 AuthStore - Profile response:', response.data);
       set({ 
         currentUser: response.data.user, 
         isAuthenticated: true, 
@@ -48,9 +49,9 @@ const useAuthStore = create((set, get) => ({
         error: null 
       });
       
-      // Después de confirmar la autenticación, cargar el carrito
+      // Después de confirmar la autenticación, inicializar el carrito
       const cartStore = require('./cartStore').default.getState();
-      await cartStore.fetchCart();
+      await cartStore.initializeCart();
       
       return response.data.user;
     } catch (err) {
@@ -97,6 +98,7 @@ const useAuthStore = create((set, get) => ({
       
       // Fetch user profile after login
       const profileResponse = await axios.get('/auth/profile');
+      console.log('🔍 AuthStore - Login profile response:', profileResponse.data);
       set({ 
         currentUser: profileResponse.data.user, 
         isAuthenticated: true, 
@@ -105,9 +107,9 @@ const useAuthStore = create((set, get) => ({
         error: null
       });
       
-      // IMPORTANTE: Cargar el carrito inmediatamente después del login exitoso
+      // IMPORTANTE: Inicializar el carrito inmediatamente después del login exitoso
       const cartStore = require('./cartStore').default.getState();
-      await cartStore.fetchCart();
+      await cartStore.initializeCart();
       
       toast.success('Login successful!');
       return response.data;

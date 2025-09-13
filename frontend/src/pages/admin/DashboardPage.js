@@ -1,33 +1,75 @@
 import React, { useEffect } from 'react';
 import { Container, Row, Col, Card, Table, Alert, Spinner } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/layouts/AdminLayout';
 import useAdminStore from '../../store/adminStore';
+import useAuthStore from '../../store/authStore';
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   const { 
     dashboardData,
     loading,
     errors,
     fetchDashboardData
   } = useAdminStore();
+  
+  const { isAuthenticated, currentUser } = useAuthStore();
+  const role = currentUser?.role;
 
   const isLoading = loading.dashboard;
   const error = errors.dashboard;
 
   useEffect(() => {
+    // Verificar autenticación y rol de admin
+    if (!isAuthenticated) {
+      console.log('🔍 Dashboard - User not authenticated, redirecting to login');
+      navigate('/login');
+      return;
+    }
+    
+    if (role !== 'admin') {
+      console.log('🔍 Dashboard - User is not admin, redirecting to home');
+      navigate('/');
+      return;
+    }
+    
     console.log('🔍 Dashboard useEffect - Calling fetchDashboardData');
     fetchDashboardData();
-  }, [fetchDashboardData]);
+  }, [isAuthenticated, role, navigate, fetchDashboardData]);
 
   // Debug logs para ver el estado actual
   console.log('🔍 Dashboard Render - Current state:', {
+    isAuthenticated,
+    currentUser,
+    role,
     isLoading,
     error,
     dashboardData,
     hasData: !!dashboardData,
     dataKeys: dashboardData ? Object.keys(dashboardData) : 'No data'
   });
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (!isAuthenticated || !currentUser || role !== 'admin') {
+    return (
+      <AdminLayout>
+        <Container fluid className="py-4">
+          <div className="text-center">
+            <Spinner animation="border" role="status" variant="primary">
+              <span className="visually-hidden">Verifying access...</span>
+            </Spinner>
+            <p className="mt-3">Verifying access...</p>
+            <small className="text-muted">
+              Auth: {isAuthenticated ? 'Yes' : 'No'} | 
+              User: {currentUser ? 'Yes' : 'No'} | 
+              Role: {role || 'undefined'}
+            </small>
+          </div>
+        </Container>
+      </AdminLayout>
+    );
+  }
 
   const getStatusBadgeClass = (status) => {
     switch (status.toLowerCase()) {

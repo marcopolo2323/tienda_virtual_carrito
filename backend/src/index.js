@@ -115,6 +115,8 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api/payment', paymentRoutes);
+
+// Rutas públicas de banners
 app.use('/api/banners', bannersRoutes);
 
 // Rutas administrativas (acceso restringido)

@@ -144,11 +144,11 @@ const ProductDetailPage = () => {
             </div>
           )}
 
-          {product.category && (
+          {(product.category_name || product.Category?.name || product.category?.name) && (
             <div className="mb-3">
               <strong>Category:</strong> 
               <Link to={`/products?category=${product.category_id}`} className="ms-2">
-                {product.category.name}
+                {product.category_name || product.Category?.name || product.category?.name}
               </Link>
             </div>
           )}

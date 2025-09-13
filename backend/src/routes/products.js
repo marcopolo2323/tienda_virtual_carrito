@@ -6,7 +6,8 @@ const upload = require('../middlewares/upload');
 
 // Rutas de productos
 router.get('/', productController.getAllProducts);
-router.get('/featured', productController.getFeaturedProducts); // ← AGREGAR ESTA LÍNEA
+router.get('/featured', productController.getFeaturedProducts);
+router.post('/validate-stock', productController.validateStock);
 router.get('/:id', productController.getProductById);
 
 // Rutas protegidas de productos (admin)

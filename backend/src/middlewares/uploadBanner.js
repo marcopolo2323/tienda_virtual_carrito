@@ -1,80 +1,92 @@
-// middleware/uploadBanner.js - Middleware específico para banners con Cloudinary
-const { uploadBanner } = require('../config/cloudinary');
+const multer = require('multer');
+const { cloudinary } = require('../config/cloudinary');
 
-// Middleware para manejo de errores de multer específicos para banners
-const handleBannerUploadError = (error, req, res, next) => {
-  console.error('Banner upload error:', error);
-  
-  if (error.code === 'LIMIT_FILE_SIZE') {
-    return res.status(400).json({
-      success: false,
-      message: 'File too large',
-      details: [{ field: 'image', message: 'File size must be less than 10MB' }]
-    });
-  }
-  
-  if (error.code === 'LIMIT_FILE_COUNT') {
-    return res.status(400).json({
-      success: false,
-      message: 'Too many files',
-      details: [{ field: 'image', message: 'Only one file is allowed' }]
-    });
-  }
-  
-  if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-    return res.status(400).json({
-      success: false,
-      message: 'Unexpected field',
-      details: [{ field: 'image', message: 'Field name should be "image"' }]
-    });
-  }
-  
-  // Error de tipo de archivo
-  if (error.message.includes('Solo se permiten imágenes')) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid file type',
-      details: [{ field: 'image', message: 'Only JPG, PNG, GIF and WebP files are allowed' }]
-    });
-  }
-  
-  // Error genérico
-  return res.status(400).json({
-    success: false,
-    message: 'File upload error',
-    details: [{ field: 'image', message: error.message || 'Unknown upload error' }]
-  });
-};
+// Configuración de multer con almacenamiento en memoria
+const storage = multer.memoryStorage();
 
-// Middleware específico para subir imagen de banner
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+    
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos de imagen (JPEG, PNG, GIF, WebP, AVIF)'), false);
+    }
+  }
+});
+
+// Middleware para subir imagen de banner
 const uploadBannerImage = (req, res, next) => {
-  console.log('Banner upload middleware called');
-  console.log('Request body before upload:', req.body);
-  console.log('Request files:', req.files);
+  console.log('🔄 UPLOAD MIDDLEWARE CALLED');
+  console.log('📋 Request method:', req.method);
+  console.log('📋 Request URL:', req.url);
   
-  const uploadSingle = uploadBanner.single('image');
+  const uploadSingle = upload.single('image');
   
-  uploadSingle(req, res, (err) => {
+  uploadSingle(req, res, async (err) => {
+    console.log('📁 Upload callback executed');
+    console.log('📁 Error:', err);
+    console.log('📁 File:', req.file);
+    console.log('📁 Body:', req.body);
+    
     if (err) {
-      console.error('Banner upload error:', err);
-      return handleBannerUploadError(err, req, res, next);
+      console.error('❌ Upload error:', err);
+      return res.status(400).json({
+        success: false,
+        message: err.message
+      });
     }
     
-    console.log('Banner file uploaded successfully');
-    console.log('Uploaded file:', req.file ? {
-      originalname: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-      filename: req.file.filename,
-      path: req.file.path
-    } : 'No file');
-    console.log('Request body after upload:', req.body);
+    // Solo requerir imagen para creación, no para actualización
+    if (!req.file && req.method === 'POST') {
+      console.error('❌ No file received for creation');
+      return res.status(400).json({
+        success: false,
+        message: 'Se requiere una imagen'
+      });
+    }
+    
+    // Solo subir a Cloudinary si hay un archivo
+    if (req.file) {
+      try {
+        // Subir a Cloudinary
+        const result = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: 'tienda-banners',
+              transformation: [
+                { width: 1200, height: 400, crop: 'fill', quality: 'auto:good' },
+                { fetch_format: 'auto' }
+              ]
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          
+          uploadStream.end(req.file.buffer);
+        });
+        
+        // Agregar información de Cloudinary al objeto file
+        req.file.url = result.secure_url;
+        req.file.public_id = result.public_id;
+      } catch (error) {
+        console.error('Error uploading to Cloudinary:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Error al subir la imagen'
+        });
+      }
+    }
     
     next();
   });
 };
 
-module.exports = {
-  uploadBannerImage,
-  handleBannerUploadError
-};
+module.exports = { uploadBannerImage };

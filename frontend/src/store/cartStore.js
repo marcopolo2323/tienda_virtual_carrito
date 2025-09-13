@@ -15,6 +15,76 @@ const useCartStore = create((set, get) => ({
     const token = localStorage.getItem('token');
     return !!token;
   },
+
+  // Helper function para cargar carrito desde localStorage
+  loadLocalCart: () => {
+    try {
+      const localCart = localStorage.getItem('localCart');
+      if (localCart) {
+        const parsedCart = JSON.parse(localCart);
+        const { total, itemCount } = get().calculateTotals(parsedCart);
+        set({
+          items: parsedCart,
+          total,
+          itemCount,
+          loading: false,
+          error: null
+        });
+        console.log('🛒 Carrito local cargado:', { items: parsedCart.length, total, itemCount });
+        return true;
+      }
+    } catch (error) {
+      console.error('Error loading local cart:', error);
+    }
+    return false;
+  },
+
+  // Helper function para guardar carrito en localStorage
+  saveLocalCart: (items) => {
+    try {
+      localStorage.setItem('localCart', JSON.stringify(items));
+      console.log('💾 Carrito guardado localmente:', items.length, 'items');
+    } catch (error) {
+      console.error('Error saving local cart:', error);
+    }
+  },
+
+  // Helper function para sincronizar carrito local con servidor
+  syncLocalCartWithServer: async () => {
+    if (!get().isAuthenticated()) return false;
+
+    try {
+      const localCart = localStorage.getItem('localCart');
+      if (!localCart) return true;
+
+      const localItems = JSON.parse(localCart);
+      console.log('🔄 Sincronizando carrito local con servidor:', localItems.length, 'items');
+
+      // Obtener carrito del servidor
+      await get().fetchCart();
+      const serverItems = get().items;
+
+      // Si el carrito local tiene items y el servidor está vacío, sincronizar
+      if (localItems.length > 0 && serverItems.length === 0) {
+        console.log('📤 Enviando items locales al servidor...');
+        for (const item of localItems) {
+          await get().addToCart(item.product_id, item.quantity);
+        }
+        // Limpiar carrito local después de sincronizar
+        localStorage.removeItem('localCart');
+        console.log('✅ Carrito local sincronizado con servidor');
+      } else if (serverItems.length > 0) {
+        // Si el servidor tiene items, usar el del servidor y limpiar el local
+        localStorage.removeItem('localCart');
+        console.log('📥 Usando carrito del servidor, limpiando local');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error syncing local cart:', error);
+      return false;
+    }
+  },
   
   // Helper function para normalizar un item del carrito
   normalizeCartItem: (item) => {
@@ -165,23 +235,107 @@ const useCartStore = create((set, get) => ({
     }
   },
   
-  addToCart: async (productId, quantity = 1) => {
+  addToCart: async (productId, quantity = 1, productData = null) => {
     console.log('🛒 Intentando agregar al carrito:', { productId, quantity });
     
+    set({ loading: true, error: null });
+
+    // Si el usuario no está autenticado, manejar localmente
     if (!get().isAuthenticated()) {
-      console.log('❌ Usuario no autenticado');
-      toast.error('Please log in to add items to cart');
-      return false;
+      console.log('👤 Usuario no autenticado, guardando localmente');
+      
+      try {
+        // Obtener datos del producto si no se proporcionan
+        let product = productData;
+        if (!product) {
+          const response = await axios.get(`/products/${productId}`);
+          product = response.data.product || response.data;
+        }
+
+        if (!product) {
+          toast.error('Producto no encontrado');
+          set({ loading: false, error: 'Product not found' });
+          return false;
+        }
+
+        // Verificar stock
+        if (product.stock < quantity) {
+          toast.error(`Solo hay ${product.stock} unidades disponibles`);
+          set({ loading: false, error: 'Insufficient stock' });
+          return false;
+        }
+
+        // Obtener carrito actual
+        const currentItems = [...get().items];
+        
+        // Buscar si el producto ya existe en el carrito
+        const existingItemIndex = currentItems.findIndex(item => 
+          item.product_id === productId || item.id === productId
+        );
+
+        if (existingItemIndex >= 0) {
+          // Actualizar cantidad si ya existe
+          const newQuantity = currentItems[existingItemIndex].quantity + quantity;
+          if (newQuantity > product.stock) {
+            toast.error(`No puedes agregar más de ${product.stock} unidades`);
+            set({ loading: false, error: 'Exceeds available stock' });
+            return false;
+          }
+          currentItems[existingItemIndex].quantity = newQuantity;
+        } else {
+          // Agregar nuevo item
+          const newItem = {
+            id: `local_${Date.now()}`,
+            product_id: productId,
+            quantity: quantity,
+            price: parseFloat(product.price),
+            name: product.name,
+            image_url: product.image_url,
+            stock: product.stock,
+            product: product
+          };
+          currentItems.push(newItem);
+        }
+
+        // Calcular totales
+        const { total, itemCount } = get().calculateTotals(currentItems);
+        
+        // Actualizar estado
+        set({
+          items: currentItems,
+          total,
+          itemCount,
+          loading: false,
+          error: null
+        });
+
+        // Guardar en localStorage
+        get().saveLocalCart(currentItems);
+        
+        toast.success('Producto agregado al carrito!');
+        console.log('✅ Producto agregado localmente');
+        return true;
+      } catch (err) {
+        console.error('❌ Error adding to local cart:', err);
+        toast.error('Error al agregar producto al carrito');
+        set({
+          loading: false,
+          error: err.message || 'Failed to add item to cart'
+        });
+        return false;
+      }
     }
 
-    set({ loading: true, error: null });
+    // Usuario autenticado - manejar en servidor
     console.log('🔄 Enviando request a /cart/add...');
     
     try {
       const requestData = { productId, quantity };
       console.log('📤 Datos enviados:', requestData);
       
-      const response = await axios.post('/cart/add', requestData);
+      const response = await get().retryOperation(async () => {
+        return await axios.post('/cart/add', requestData);
+      });
       
       console.log('📦 Respuesta de addToCart:', response);
       console.log('📦 Status:', response.status);
@@ -213,6 +367,12 @@ const useCartStore = create((set, get) => ({
       console.error('❌ Error response:', err.response?.data);
       console.error('❌ Error status:', err.response?.status);
       
+      // Manejar errores de conexión
+      if (get().handleConnectionError(err)) {
+        set({ loading: false, error: 'Connection error' });
+        return false;
+      }
+      
       if (err.response?.status === 401 || err.response?.status === 403) {
         console.log('❌ Error de autenticación en addToCart');
         toast.error('Please log in to add items to cart');
@@ -234,17 +394,67 @@ const useCartStore = create((set, get) => ({
   },
   
   updateCartItem: async (productId, quantity) => {
-    if (!get().isAuthenticated()) {
-      toast.error('Please log in to update cart');
-      return;
-    }
-
     if (quantity < 1) {
-      toast.error('Quantity must be at least 1');
+      toast.error('La cantidad debe ser al menos 1');
       return;
     }
     
     set({ loading: true, error: null });
+
+    // Si el usuario no está autenticado, manejar localmente
+    if (!get().isAuthenticated()) {
+      try {
+        const currentItems = [...get().items];
+        const itemIndex = currentItems.findIndex(item => 
+          item.product_id === productId || item.id === productId
+        );
+
+        if (itemIndex === -1) {
+          toast.error('Producto no encontrado en el carrito');
+          set({ loading: false, error: 'Item not found in cart' });
+          return;
+        }
+
+        // Verificar stock
+        if (quantity > currentItems[itemIndex].stock) {
+          toast.error(`Solo hay ${currentItems[itemIndex].stock} unidades disponibles`);
+          set({ loading: false, error: 'Insufficient stock' });
+          return;
+        }
+
+        // Actualizar cantidad
+        currentItems[itemIndex].quantity = quantity;
+
+        // Calcular totales
+        const { total, itemCount } = get().calculateTotals(currentItems);
+        
+        // Actualizar estado
+        set({
+          items: currentItems,
+          total,
+          itemCount,
+          loading: false,
+          error: null
+        });
+
+        // Guardar en localStorage
+        get().saveLocalCart(currentItems);
+        
+        toast.success('Carrito actualizado!');
+        console.log('✅ Carrito actualizado localmente');
+        return;
+      } catch (err) {
+        console.error('Error updating local cart:', err);
+        toast.error('Error al actualizar el carrito');
+        set({
+          loading: false,
+          error: err.message || 'Failed to update cart'
+        });
+        return;
+      }
+    }
+
+    // Usuario autenticado - manejar en servidor
     try {
       const response = await axios.put(`/cart/update`, { productId, quantity });
       
@@ -282,12 +492,55 @@ const useCartStore = create((set, get) => ({
   },
   
   removeFromCart: async (productId) => {
+    set({ loading: true, error: null });
+
+    // Si el usuario no está autenticado, manejar localmente
     if (!get().isAuthenticated()) {
-      toast.error('Please log in to modify cart');
-      return;
+      try {
+        const currentItems = [...get().items];
+        const itemIndex = currentItems.findIndex(item => 
+          item.product_id === productId || item.id === productId
+        );
+
+        if (itemIndex === -1) {
+          toast.error('Producto no encontrado en el carrito');
+          set({ loading: false, error: 'Item not found in cart' });
+          return;
+        }
+
+        // Remover item
+        currentItems.splice(itemIndex, 1);
+
+        // Calcular totales
+        const { total, itemCount } = get().calculateTotals(currentItems);
+        
+        // Actualizar estado
+        set({
+          items: currentItems,
+          total,
+          itemCount,
+          loading: false,
+          error: null
+        });
+
+        // Guardar en localStorage
+        get().saveLocalCart(currentItems);
+        
+        toast.success('Producto eliminado del carrito!');
+        console.log('✅ Producto eliminado localmente');
+        return;
+      } catch (err) {
+        console.error('Error removing from local cart:', err);
+        toast.error('Error al eliminar producto del carrito');
+        set({
+          loading: false,
+          error: err.message || 'Failed to remove item from cart'
+        });
+        return;
+      }
     }
 
-    set({ loading: true, error: null });
+    // Usuario autenticado - manejar en servidor
     try {
       const response = await axios.delete(`/cart/remove/${productId}`);
       
@@ -325,12 +578,37 @@ const useCartStore = create((set, get) => ({
   },
   
   clearCart: async () => {
+    set({ loading: true, error: null });
+
+    // Si el usuario no está autenticado, limpiar localmente
     if (!get().isAuthenticated()) {
-      toast.error('Please log in to clear cart');
-      return;
+      try {
+        set({
+          items: [],
+          total: 0,
+          itemCount: 0,
+          loading: false,
+          error: null
+        });
+
+        // Limpiar localStorage
+        localStorage.removeItem('localCart');
+        
+        toast.success('Carrito vaciado!');
+        console.log('✅ Carrito limpiado localmente');
+        return;
+      } catch (err) {
+        console.error('Error clearing local cart:', err);
+        toast.error('Error al vaciar el carrito');
+        set({
+          loading: false,
+          error: err.message || 'Failed to clear cart'
+        });
+        return;
+      }
     }
 
-    set({ loading: true, error: null });
+    // Usuario autenticado - limpiar en servidor
     try {
       await axios.delete('/cart');
       toast.success('Cart cleared!');
@@ -375,6 +653,132 @@ const useCartStore = create((set, get) => ({
       console.log('Refreshing cart after authentication');
       await get().fetchCart();
     }
+  },
+
+  // Función de inicialización automática del carrito
+  initializeCart: async () => {
+    // Inicializando carrito
+    
+    if (get().isAuthenticated()) {
+      // Usuario autenticado - sincronizar carrito local con servidor
+      // Usuario autenticado, sincronizando carrito
+      await get().syncLocalCartWithServer();
+    } else {
+      // Usuario no autenticado - cargar carrito local
+      // Usuario no autenticado, cargando carrito local
+      const loaded = get().loadLocalCart();
+      if (!loaded) {
+        // No hay carrito local, inicializando vacío
+        set({
+          items: [],
+          total: 0,
+          itemCount: 0,
+          loading: false,
+          error: null
+        });
+      }
+    }
+  },
+
+  // Función para verificar y actualizar stock en tiempo real
+  validateStock: async () => {
+    if (get().items.length === 0) return;
+
+    try {
+      const itemsToValidate = get().items.map(item => item.product_id);
+      const response = await axios.post('/products/validate-stock', { productIds: itemsToValidate });
+      
+      if (response.data && response.data.products) {
+        const stockData = response.data.products;
+        let hasChanges = false;
+        const updatedItems = get().items.map(item => {
+          const stockInfo = stockData.find(p => p.id === item.product_id);
+          if (stockInfo && stockInfo.stock !== item.stock) {
+            hasChanges = true;
+            return { ...item, stock: stockInfo.stock };
+          }
+          return item;
+        });
+
+        if (hasChanges) {
+          const { total, itemCount } = get().calculateTotals(updatedItems);
+          set({
+            items: updatedItems,
+            total,
+            itemCount
+          });
+          
+          // Guardar cambios si no está autenticado
+          if (!get().isAuthenticated()) {
+            get().saveLocalCart(updatedItems);
+          }
+          
+          toast.info('Stock actualizado - revisa tu carrito');
+        }
+      }
+    } catch (error) {
+      console.error('Error validating stock:', error);
+      // No mostrar error al usuario para validación de stock silenciosa
+    }
+  },
+
+  // Función para recuperar automáticamente de errores de red
+  retryOperation: async (operation, maxRetries = 3) => {
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error;
+        console.log(`Intento ${attempt} falló:`, error.message);
+        
+        if (attempt < maxRetries) {
+          // Esperar antes del siguiente intento (backoff exponencial)
+          const delay = Math.pow(2, attempt) * 1000;
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+    
+    throw lastError;
+  },
+
+  // Función para manejar errores de conexión
+  handleConnectionError: (error) => {
+    if (error.code === 'NETWORK_ERROR' || error.message.includes('Network Error')) {
+      toast.error('Error de conexión. Verificando conectividad...');
+      
+      // Intentar reconectar después de 5 segundos
+      setTimeout(() => {
+        if (navigator.onLine) {
+          toast.info('Conexión restaurada. Sincronizando carrito...');
+          get().initializeCart();
+        } else {
+          toast.warning('Sin conexión a internet. Los cambios se guardarán localmente.');
+        }
+      }, 5000);
+      
+      return true;
+    }
+    return false;
+  },
+
+  // Función para sincronizar carrito cuando se recupera la conexión
+  syncOnReconnect: () => {
+    const handleOnline = () => {
+      console.log('Conexión restaurada, sincronizando carrito...');
+      if (get().isAuthenticated()) {
+        get().syncLocalCartWithServer();
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('online', handleOnline);
+    };
   },
 }));
 

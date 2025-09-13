@@ -209,70 +209,108 @@ const getOrderById = async (req, res) => {
 
 // Crear una nueva orden
 const createOrder = async (req, res) => {
-  const transaction = await sequelize.transaction.begin();
+  const transaction = await sequelize.transaction();
   
   try {
-    const { items, shippingAddress, paymentMethod, total } = req.body;
-    
-    if (!items || !items.length) {
-      return res.status(400).json({ message: 'Order must have at least one item' });
-    }
+    const { 
+      shipping_info, 
+      payment_method, 
+      preference_id,
+      subtotal, 
+      shipping_cost, 
+      tax, 
+      total, 
+      status = 'pending' 
+    } = req.body;
     
     // Crear la orden
     const order = await Order.create({
       user_id: req.user.id,
+      shipping_info: JSON.stringify(shipping_info),
+      payment_method,
+      preference_id,
+      subtotal,
+      shipping_cost,
+      tax,
       total,
-      shippingAddress,
-      paymentMethod,
-      status: 'pending',
-      paymentStatus: 'pending'
+      status,
+      payment_status: 'pending'
     }, { transaction });
+    
+    // Obtener items del carrito del usuario
+    const cart = await Cart.findOne({
+      where: { user_id: req.user.id },
+      include: [
+        {
+          model: CartItem,
+          include: [Product]
+        }
+      ]
+    }, { transaction });
+    
+    if (!cart || !cart.CartItems || cart.CartItems.length === 0) {
+      await transaction.rollback();
+      return res.status(400).json({ 
+        success: false,
+        message: 'No hay items en el carrito' 
+      });
+    }
     
     // Crear los items de la orden y actualizar stock
     const orderItems = [];
     
-    for (const item of items) {
-      const product = await Product.findByPk(item.productId, { transaction });
+    for (const cartItem of cart.CartItems) {
+      const product = cartItem.Product;
       
-      if (!product) {
-        await transaction.rollback();
-        return res.status(404).json({ message: `Product with ID ${item.product_id} not found` });
-      }
-      
-      if (product.stock < item.quantity) {
+      if (product.stock < cartItem.quantity) {
         await transaction.rollback();
         return res.status(400).json({ 
-          message: `Not enough stock for product ${product.name}. Available: ${product.stock}` 
+          success: false,
+          message: `No hay suficiente stock para ${product.name}. Disponible: ${product.stock}` 
         });
       }
       
       // Actualizar stock
-      product.stock -= item.quantity;
+      product.stock -= cartItem.quantity;
       await product.save({ transaction });
       
       // Crear item de orden
       const orderItem = await OrderItem.create({
-        orderId: order.id,
-        productId: item.product_id,
-        quantity: item.quantity,
-        price: product.price
+        order_id: order.id,
+        product_id: cartItem.product_id,
+        quantity: cartItem.quantity,
+        price: cartItem.price
       }, { transaction });
       
       orderItems.push(orderItem);
     }
     
+    // Limpiar el carrito después de crear la orden
+    await CartItem.destroy({
+      where: { cart_id: cart.id }
+    }, { transaction });
+    
     await transaction.commit();
     
     res.status(201).json({
       success: true,
+      message: 'Orden creada exitosamente',
       order: {
-        ...order.toJSON(),
-        items: orderItems
+        id: order.id,
+        total: order.total,
+        status: order.status,
+        payment_status: order.payment_status,
+        created_at: order.created_at
       }
     });
   } catch (error) {
     await transaction.rollback();
-    res.status(500).json({ message: error.message });
+    console.error('Error creating order:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error al crear la orden',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 

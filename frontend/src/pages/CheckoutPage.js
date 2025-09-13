@@ -260,8 +260,10 @@ const CheckoutPage = () => {
 
         const response = await axios.post('/orders', orderData);
         
+        // El carrito se limpia automáticamente en el backend
+        // Solo limpiar el estado local si es necesario
         clearCart();
-        navigate(`/order-success/${response.data.id}`);
+        navigate(`/order-success/${response.data.order.id}`);
       }
     } catch (err) {
       console.error('Error processing order:', err);

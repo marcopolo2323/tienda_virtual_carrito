@@ -32,7 +32,7 @@ const bannerStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'tienda-banners', // Carpeta específica para banners
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'],
     transformation: [
       { width: 1200, height: 400, crop: 'fill', quality: 'auto:good' }, // Tamaño optimizado para banners
       { fetch_format: 'auto' }
@@ -68,12 +68,12 @@ const uploadBanner = multer({
     fileSize: 10 * 1024 * 1024 // 10MB límite para banners (más grande)
   },
   fileFilter: (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
     
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Solo se permiten imágenes (JPEG, JPG, PNG, GIF, WebP)'), false);
+      cb(new Error('Solo se permiten imágenes (JPEG, JPG, PNG, GIF, WebP, AVIF)'), false);
     }
   }
 });

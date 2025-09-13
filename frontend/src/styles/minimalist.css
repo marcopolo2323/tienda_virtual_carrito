@@ -1,0 +1,770 @@
+/* Minimalist Design System - Clean and Simple */
+
+/* Import clean fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* CSS Variables for minimalist theme */
+:root {
+  /* Minimalist Color Palette */
+  --primary-black: #000000;
+  --primary-white: #ffffff;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+  
+  /* Accent colors (minimal use) */
+  --accent-blue: #3b82f6;
+  --accent-red: #ef4444;
+  --accent-green: #10b981;
+  
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* Global Minimalist Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--gray-900);
+  background-color: var(--primary-white);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Minimalist Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: var(--primary-black);
+  margin: 0 0 var(--space-md) 0;
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+p {
+  margin: 0 0 var(--space-md) 0;
+  color: var(--gray-700);
+}
+
+/* Minimalist Navigation */
+.navbar {
+  background: var(--primary-white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--space-md) 0;
+  box-shadow: none;
+}
+
+.minimalist-navbar {
+  background: var(--primary-white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--space-lg) 0;
+}
+
+.minimalist-brand {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-black) !important;
+  text-decoration: none;
+  letter-spacing: -0.025em;
+}
+
+.navbar-brand {
+  font-family: var(--font-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-black) !important;
+  text-decoration: none;
+  letter-spacing: -0.025em;
+}
+
+.navbar-nav .nav-link {
+  color: var(--gray-600) !important;
+  font-weight: 400;
+  padding: var(--space-sm) var(--space-md);
+  transition: color var(--transition-fast);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: var(--primary-black) !important;
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--primary-black) !important;
+  font-weight: 500;
+}
+
+.minimalist-search .form-control {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.875rem;
+  width: 300px;
+  max-width: 100%;
+}
+
+.minimalist-search .form-control:focus {
+  border-color: var(--primary-black);
+  box-shadow: none;
+}
+
+.btn-search {
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  background: var(--primary-white);
+  color: var(--gray-600);
+  transition: all var(--transition-fast);
+}
+
+.btn-search:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}
+
+/* Minimalist Buttons */
+.btn {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: 0.875rem;
+  line-height: 1.25;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.btn:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: var(--primary-black);
+  border-color: var(--primary-black);
+  color: var(--primary-white);
+}
+
+.btn-primary:hover {
+  background-color: var(--gray-800);
+  border-color: var(--gray-800);
+  color: var(--primary-white);
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  border-color: var(--gray-300);
+  color: var(--gray-700);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-400);
+  color: var(--gray-900);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--gray-600);
+}
+
+.btn-ghost:hover {
+  background-color: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.75rem;
+}
+
+.btn-lg {
+  padding: var(--space-md) var(--space-xl);
+  font-size: 1rem;
+}
+
+/* Minimalist Cards */
+.card {
+  background-color: var(--primary-white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-300);
+}
+
+.card-header {
+  background-color: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--space-lg);
+  font-weight: 500;
+  color: var(--gray-900);
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+.card-footer {
+  background-color: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+  padding: var(--space-lg);
+}
+
+/* Product Cards */
+.product-card {
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-normal);
+  background: var(--primary-white);
+}
+
+.minimalist-card {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  background: var(--primary-white);
+  box-shadow: none;
+}
+
+.minimalist-card:hover {
+  border-color: var(--gray-300);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.minimalist-card .card-img-top {
+  transition: transform var(--transition-normal);
+  background-color: var(--gray-100);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.minimalist-card:hover .card-img-top {
+  transform: scale(1.01);
+}
+
+.minimalist-card .card-title {
+  font-weight: 500;
+  color: var(--gray-900);
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: var(--space-sm);
+}
+
+.minimalist-card .card-text {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-md);
+}
+
+.product-card:hover {
+  border-color: var(--gray-300);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.product-card .card-img-top {
+  transition: transform var(--transition-normal);
+  background-color: var(--gray-100);
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.02);
+}
+
+.product-card .card-title {
+  font-weight: 500;
+  color: var(--gray-900);
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: var(--space-sm);
+}
+
+.product-card .card-text {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-md);
+}
+
+/* Minimalist Pricing */
+.price {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: var(--primary-black);
+  font-size: 1.125rem;
+}
+
+.price-original {
+  color: var(--gray-500);
+  text-decoration: line-through;
+  font-size: 0.875rem;
+  margin-left: var(--space-sm);
+}
+
+/* Minimalist Forms */
+.form-control {
+  font-family: var(--font-primary);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  background-color: var(--primary-white);
+  color: var(--gray-900);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-black);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-control::placeholder {
+  color: var(--gray-400);
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--gray-900);
+  margin-bottom: var(--space-xs);
+  font-size: 0.875rem;
+}
+
+/* Minimalist Tables */
+.table {
+  background-color: var(--primary-white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  font-weight: 500;
+  color: var(--gray-900);
+  padding: var(--space-md);
+  font-size: 0.875rem;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.table tbody tr:hover {
+  background-color: var(--gray-50);
+}
+
+.table tbody td {
+  padding: var(--space-md);
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+/* Minimalist Badges */
+.badge {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.badge.bg-primary {
+  background-color: var(--primary-black) !important;
+  color: var(--primary-white) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--accent-green) !important;
+  color: var(--primary-white) !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--accent-red) !important;
+  color: var(--primary-white) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--gray-200) !important;
+  color: var(--gray-900) !important;
+}
+
+/* Minimalist Alerts */
+.alert {
+  border: 1px solid;
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-md);
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.alert-warning {
+  background-color: #fffbeb;
+  border-color: #fed7aa;
+  color: #d97706;
+}
+
+.alert-info {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+  color: #2563eb;
+}
+
+/* Minimalist Carousel */
+.carousel {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: var(--gray-400);
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border: none;
+  margin: 0 var(--space-xs);
+}
+
+.carousel-indicators .active {
+  background-color: var(--primary-black);
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  backdrop-filter: blur(10px);
+}
+
+/* Minimalist Spacing */
+.py-minimal { padding-top: var(--space-lg) !important; padding-bottom: var(--space-lg) !important; }
+.py-minimal-lg { padding-top: var(--space-xl) !important; padding-bottom: var(--space-xl) !important; }
+.mb-minimal { margin-bottom: var(--space-md) !important; }
+.mb-minimal-lg { margin-bottom: var(--space-lg) !important; }
+
+/* Minimalist Layout */
+.minimalist-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-white);
+}
+
+.minimalist-main {
+  flex: 1;
+  background-color: var(--primary-white);
+}
+
+/* Minimalist Container */
+.minimalist-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* Minimalist Grid */
+.minimalist-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.minimalist-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.minimalist-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.minimalist-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Minimalist Loading */
+.spinner-border {
+  color: var(--primary-black);
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Minimalist Responsive */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  .minimalist-container {
+    padding: 0 var(--space-md);
+  }
+  
+  .minimalist-grid {
+    gap: var(--space-md);
+  }
+  
+  .card-body {
+    padding: var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.8rem;
+  }
+}
+
+/* Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* Minimalist Focus States */
+*:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.btn:focus,
+.form-control:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Minimalist Selection */
+::selection {
+  background-color: var(--gray-200);
+  color: var(--primary-black);
+}
+
+/* Minimalist Homepage */
+.minimalist-homepage {
+  padding: 0;
+}
+
+.minimalist-newsletter {
+  background-color: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.minimalist-newsletter h3 {
+  color: var(--gray-900);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+/* Minimalist Sections */
+.minimalist-section {
+  padding: var(--space-2xl) 0;
+}
+
+.minimalist-section-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.minimalist-section-header h2 {
+  color: var(--primary-black);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.minimalist-section-header p {
+  color: var(--gray-600);
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+/* Minimalist Footer */
+.minimalist-footer {
+  background: #ffffff;
+  border-top: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.minimalist-footer .footer-brand h6 {
+  color: #212529;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.minimalist-footer .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.minimalist-footer .footer-link {
+  color: #6c757d;
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.minimalist-footer .footer-link:hover {
+  color: #212529;
+  text-decoration: none;
+}
+
+.minimalist-footer .footer-divider {
+  border: none;
+  border-top: 1px solid #e9ecef;
+  margin: 0;
+}
+
+.minimalist-footer .footer-copyright {
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.minimalist-footer .footer-social {
+  display: flex;
+  align-items: center;
+}
+
+.minimalist-footer .social-link {
+  color: #6c757d;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.minimalist-footer .social-link:hover {
+  color: #212529;
+}
+
+@media (max-width: 768px) {
+  .minimalist-footer .footer-links {
+    justify-content: flex-start;
+  }
+  
+  .minimalist-footer .footer-social {
+    margin-top: 0.5rem;
+  }
+}
