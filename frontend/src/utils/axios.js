@@ -29,10 +29,8 @@ console.log('🔧 REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
 // Interceptor para agregar el token a las peticiones y asegurar URL base
 apiClient.interceptors.request.use(
   (config) => {
-    // Asegurar que la URL base esté configurada
-    if (!config.baseURL) {
-      config.baseURL = getApiBaseUrl();
-    }
+    // Forzar la URL base
+    config.baseURL = getApiBaseUrl();
     
     // Asegurar que la URL incluya /api si no la tiene
     if (config.url && !config.url.startsWith('/api/') && !config.url.startsWith('http')) {
@@ -45,9 +43,11 @@ apiClient.interceptors.request.use(
     }
     
     console.log('🌐 Petición:', config.method?.toUpperCase(), config.baseURL + config.url);
+    console.log('🌐 URL completa:', config.baseURL + config.url);
     return config;
   },
   (error) => {
+    console.error('❌ Error en interceptor de request:', error);
     return Promise.reject(error);
   }
 );

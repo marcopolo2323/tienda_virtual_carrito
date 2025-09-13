@@ -54,10 +54,18 @@ const corsOptions = {
       'https://tu-dominio.com'
     ];
     
+    // Permitir todas las URLs de Vercel
+    const isVercelUrl = origin && (
+      origin.includes('vercel.app') || 
+      origin.includes('vercel.com') ||
+      origin.includes('tiendadiego')
+    );
+    
     console.log('🔒 CORS check - Origin:', origin);
     console.log('🔒 CORS check - Allowed origins:', allowedOrigins);
+    console.log('🔒 CORS check - Is Vercel URL:', isVercelUrl);
     
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || isVercelUrl) {
       console.log('✅ CORS permitido para:', origin);
       callback(null, true);
     } else {
