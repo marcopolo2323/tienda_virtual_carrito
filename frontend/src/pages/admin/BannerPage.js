@@ -24,8 +24,7 @@ const BannersPage = () => {
     pagination,
     fetchBanners,
     deleteBanner,
-    toggleBannerStatus,
-    reorderBanners
+    toggleBannerStatus
   } = useBannerStore();
 
   const [activeFilter, setActiveFilter] = useState(null);
@@ -33,6 +32,7 @@ const BannersPage = () => {
   useEffect(() => {
     fetchBanners(1, 10, activeFilter);
   }, [fetchBanners, activeFilter]);
+
 
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este banner?')) {
@@ -144,20 +144,36 @@ const BannersPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {banners.map(banner => (
-                        <tr key={banner.id}>
+                      {banners.filter(banner => banner && banner.id).map(banner => (
+                        <tr key={banner?.id || Math.random()}>
                           <td>
-                            <img 
-                              src={banner.image_url} 
-                              alt={banner.title}
-                              style={{ width: '80px', height: '50px', objectFit: 'cover' }}
-                              className="rounded"
-                            />
+                            {banner?.image_url ? (
+                              <img 
+                                src={banner.image_url} 
+                                alt={banner.title || 'Banner'}
+                                style={{ width: '80px', height: '50px', objectFit: 'cover' }}
+                                className="rounded"
+                              />
+                            ) : (
+                              <div 
+                                style={{ 
+                                  width: '80px', 
+                                  height: '50px', 
+                                  backgroundColor: '#f8f9fa',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  borderRadius: '4px'
+                                }}
+                              >
+                                <small className="text-muted">No image</small>
+                              </div>
+                            )}
                           </td>
                           <td>
                             <div>
-                              <strong>{banner.title}</strong>
-                              {banner.link_url && (
+                              <strong>{banner?.title || 'Sin título'}</strong>
+                              {banner?.link_url && (
                                 <div>
                                   <small className="text-muted">
                                     Links to: {banner.link_url}
@@ -168,51 +184,55 @@ const BannersPage = () => {
                           </td>
                           <td>
                             <div style={{ maxWidth: '300px' }}>
-                              {banner.description.length > 100 
-                                ? banner.description.substring(0, 100) + '...'
-                                : banner.description
-                              }
+                              {banner?.description ? (
+                                banner.description.length > 100 
+                                  ? banner.description.substring(0, 100) + '...'
+                                  : banner.description
+                              ) : 'Sin descripción'}
                             </div>
                           </td>
                           <td>
                             <Badge 
-                              bg={banner.active ? 'success' : 'secondary'}
+                              bg={banner?.active ? 'success' : 'secondary'}
                               style={{ cursor: 'pointer' }}
-                              onClick={() => handleToggleStatus(banner.id, banner.active)}
+                              onClick={() => handleToggleStatus(banner?.id, banner?.active)}
                             >
-                              {banner.active ? 'Active' : 'Inactive'}
+                              {banner?.active ? 'Active' : 'Inactive'}
                             </Badge>
                           </td>
                           <td>
-                            <Badge bg="info">{banner.display_order}</Badge>
+                            <Badge bg="info">{banner?.display_order || 0}</Badge>
                           </td>
                           <td>
                             <Dropdown>
                               <Dropdown.Toggle 
                                 variant="outline-secondary" 
                                 size="sm"
-                                id={`dropdown-${banner.id}`}
+                                id={`dropdown-${banner?.id || 'unknown'}`}
                               >
                                 <i className="bi bi-three-dots"></i>
                               </Dropdown.Toggle>
                               <Dropdown.Menu>
                                 <Dropdown.Item 
                                   as={Link} 
-                                  to={`/admin/banners/edit/${banner.id}`}
+                                  to={`/admin/banners/edit/${banner?.id}`}
+                                  disabled={!banner?.id}
                                 >
                                   <i className="bi bi-pencil me-2"></i>
                                   Edit
                                 </Dropdown.Item>
                                 <Dropdown.Item 
-                                  onClick={() => handleToggleStatus(banner.id, banner.active)}
+                                  onClick={() => handleToggleStatus(banner?.id, banner?.active)}
+                                  disabled={!banner?.id}
                                 >
-                                  <i className={`bi bi-${banner.active ? 'pause' : 'play'} me-2`}></i>
-                                  {banner.active ? 'Deactivate' : 'Activate'}
+                                  <i className={`bi bi-${banner?.active ? 'pause' : 'play'} me-2`}></i>
+                                  {banner?.active ? 'Deactivate' : 'Activate'}
                                 </Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item 
                                   className="text-danger"
-                                  onClick={() => handleDelete(banner.id)}
+                                  onClick={() => handleDelete(banner?.id)}
+                                  disabled={!banner?.id}
                                 >
                                   <i className="bi bi-trash me-2"></i>
                                   Delete
@@ -229,7 +249,7 @@ const BannersPage = () => {
                     <i className="bi bi-images text-muted" style={{ fontSize: '48px' }}></i>
                     <h5 className="text-muted mt-3">No Banners Found</h5>
                     <p className="text-muted">Create your first banner to get started.</p>
-                    <Link to="/admin/banners/create" className="btn btn-primary">
+                    <Link to="/admin/banners/new" className="btn btn-primary">
                       <i className="bi bi-plus-circle me-2"></i>
                       Create Banner
                     </Link>

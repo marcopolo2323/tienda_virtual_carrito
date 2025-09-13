@@ -13,6 +13,7 @@ import {
 } from 'react-bootstrap';
 import AdminLayout from '../../components/layouts/AdminLayout';
 import useBannerStore from '../../store/bannerStore';
+import { toast } from 'react-toastify';
 
 const BannerFormPage = () => {
   const { id } = useParams();
@@ -158,6 +159,7 @@ const BannerFormPage = () => {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -168,7 +170,13 @@ const BannerFormPage = () => {
     try {
       const formDataToSend = new FormData();
       
-      // Agregar campos requeridos con validación
+      // Validar que los campos requeridos existan
+      if (!formData.title || !formData.description) {
+        toast.error('Título y descripción son requeridos');
+        return;
+      }
+      
+      // Agregar campos requeridos
       formDataToSend.append('title', formData.title.trim());
       formDataToSend.append('description', formData.description.trim());
       

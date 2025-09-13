@@ -27,6 +27,9 @@ const {
 // Importar middlewares de autenticación
 const { authenticate, isAdmin } = require('../middlewares/auth');
 
+// Importar rutas de admin para banners
+const adminBannersRoutes = require('./adminBanners');
+
 /**
  * @route   GET /api/admin/dashboard
  * @desc    Obtener datos principales para el dashboard de administración
@@ -1175,5 +1178,8 @@ router.get('/reports/categories', authenticate, isAdmin, async (req, res) => {
     sendErrorResponse(res, handleError(error, 'No se pudo generar el reporte de categorías'));
   }
 });
+
+// Registrar rutas de admin para banners
+router.use('/banners', adminBannersRoutes);
 
 module.exports = router;

@@ -61,21 +61,21 @@ function App() {
         const user = await initializeAuth();
         
         if (user) {
-          console.log('✅ Usuario autenticado:', user.email);
+          // Usuario autenticado
         } else {
-          console.log('ℹ️ Usuario no autenticado');
+          // Usuario no autenticado
         }
         
         // Inicializar carrito automáticamente (maneja usuarios autenticados y no autenticados)
-        console.log('🛒 Inicializando carrito...');
+        // Inicializando carrito
         await initializeCart();
-        console.log('✅ Carrito inicializado exitosamente');
+        // Carrito inicializado exitosamente
         
       } catch (error) {
         console.error('❌ Error inicializando app:', error);
       } finally {
         setAppInitialized(true);
-        console.log('✅ Aplicación inicializada completamente');
+        // Aplicación inicializada completamente
       }
     };
 
@@ -135,6 +135,7 @@ function App() {
           {/* ✅ Rutas de Banners */}
           <Route path="/admin/banners" element={<AdminRoute><AdminBannersPage /></AdminRoute>} />
           <Route path="/admin/banners/new" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
+          <Route path="/admin/banners/create" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
           <Route path="/admin/banners/edit/:id" element={<AdminRoute><AdminBannerFormPage /></AdminRoute>} />
           
           <Route path="/admin/orders" element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />

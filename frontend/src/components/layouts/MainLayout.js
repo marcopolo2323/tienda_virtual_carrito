@@ -5,15 +5,17 @@ import Footer from './Footer';
 
 const MainLayout = ({ children }) => {
   return (
-    <>
+    <div className="minimalist-layout">
       <Navbar />
 
-      <Container className="py-4 min-vh-100">
-        {children}
-      </Container>
+      <main className="minimalist-main">
+        <Container className="py-minimal-lg">
+          {children}
+        </Container>
+      </main>
       
       <Footer />
-    </>
+    </div>
   );
 };
 

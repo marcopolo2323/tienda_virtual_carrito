@@ -1,0 +1,447 @@
+/* Minimalist Banner Styles */
+
+/* Banner Carousel Styles */
+.minimalist-banner-section {
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.minimalist-banner-carousel {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.minimalist-banner-item {
+  position: relative;
+  height: 45vh;
+  min-height: 300px;
+  max-height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.minimalist-banner-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.minimalist-banner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.minimalist-banner-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 2;
+}
+
+.minimalist-banner-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.minimalist-banner-text {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  color: #1a1a1a;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.minimalist-banner-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #000;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.minimalist-banner-description {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.minimalist-banner-button {
+  display: inline-block;
+  background: #000;
+  color: white;
+  padding: 0.875rem 1.75rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.minimalist-banner-button:hover {
+  background: #333;
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.minimalist-banner-indicators {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.minimalist-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.minimalist-indicator.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.minimalist-hero-banner {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  min-height: 350px;
+  max-height: 500px;
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+
+.minimalist-hero-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimalist-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.minimalist-hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.8s ease;
+}
+
+.minimalist-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  z-index: 2;
+}
+
+.minimalist-hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.minimalist-hero-text {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  color: #1a1a1a;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.minimalist-hero-container:hover .minimalist-hero-text {
+  transform: translateY(-5px);
+}
+
+.minimalist-hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #000;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.minimalist-hero-description {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.minimalist-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #000;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.minimalist-hero-cta:hover {
+  background: #333;
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.minimalist-hero-cta svg {
+  transition: transform 0.3s ease;
+}
+
+.minimalist-hero-cta:hover svg {
+  transform: translateX(4px);
+}
+
+/* Navigation */
+.minimalist-hero-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 4;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.minimalist-hero-nav:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.minimalist-hero-prev {
+  left: 2rem;
+}
+
+.minimalist-hero-next {
+  right: 2rem;
+}
+
+.minimalist-hero-dots {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 4;
+}
+
+.minimalist-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.minimalist-dot.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+.minimalist-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+/* Skeleton Loading */
+.minimalist-banner-skeleton {
+  height: 70vh;
+  min-height: 500px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 12px;
+  margin-bottom: 4rem;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.minimalist-banner-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 1rem;
+}
+
+.minimalist-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .minimalist-hero-banner {
+    height: 45vh;
+    min-height: 320px;
+  }
+  
+  .minimalist-hero-title {
+    font-size: 2.25rem;
+  }
+  
+  .minimalist-hero-description {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .minimalist-hero-banner {
+    height: 40vh;
+    min-height: 280px;
+  }
+  
+  .minimalist-hero-text {
+    padding: 2rem 1.5rem;
+  }
+  
+  .minimalist-hero-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .minimalist-hero-description {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .minimalist-hero-cta {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .minimalist-hero-nav {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .minimalist-hero-prev {
+    left: 1rem;
+  }
+  
+  .minimalist-hero-next {
+    right: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .minimalist-hero-banner {
+    height: 35vh;
+    min-height: 250px;
+  }
+  
+  .minimalist-hero-text {
+    padding: 1.5rem 1rem;
+  }
+  
+  .minimalist-hero-title {
+    font-size: 1.5rem;
+  }
+  
+  .minimalist-hero-description {
+    font-size: 0.85rem;
+  }
+  
+  .minimalist-hero-cta {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+  }
+}

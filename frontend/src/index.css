@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Import mobile responsive styles */
+@import './styles/mobile.css';
+
+/* Import minimalist styles */
+@import './styles/minimalist.css';

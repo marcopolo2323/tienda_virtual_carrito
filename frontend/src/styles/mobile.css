@@ -1,0 +1,246 @@
+/* Mobile Responsive Styles */
+
+/* Global mobile adjustments */
+@media (max-width: 768px) {
+  /* Reduce padding and margins */
+  .container, .container-fluid {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  /* Make cards more compact */
+  .card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .card-body {
+    padding: 0.75rem !important;
+  }
+  
+  /* Reduce heading sizes */
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  h4 {
+    font-size: 1.1rem !important;
+  }
+  
+  h5 {
+    font-size: 1rem !important;
+  }
+  
+  /* Make buttons smaller */
+  .btn {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .btn-lg {
+    font-size: 1rem !important;
+    padding: 0.75rem 1.25rem !important;
+  }
+  
+  /* Reduce form control sizes */
+  .form-control {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  /* Make tables more compact */
+  .table {
+    font-size: 0.875rem !important;
+  }
+  
+  .table td, .table th {
+    padding: 0.5rem !important;
+  }
+  
+  /* Reduce spacing in lists */
+  .list-group-item {
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Make navigation more compact */
+  .navbar-brand {
+    font-size: 1.1rem !important;
+  }
+  
+  .nav-link {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  /* Reduce modal sizes */
+  .modal-dialog {
+    margin: 0.5rem !important;
+  }
+  
+  .modal-content {
+    border-radius: 0.375rem !important;
+  }
+  
+  /* Make dropdowns more compact */
+  .dropdown-menu {
+    font-size: 0.875rem !important;
+  }
+  
+  .dropdown-item {
+    padding: 0.5rem 1rem !important;
+  }
+  
+  /* Reduce badge sizes */
+  .badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+  
+  /* Make alerts more compact */
+  .alert {
+    font-size: 0.875rem !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Reduce spinner sizes */
+  .spinner-border-sm {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+  
+  /* Make pagination more compact */
+  .pagination {
+    font-size: 0.875rem !important;
+  }
+  
+  .page-link {
+    padding: 0.375rem 0.75rem !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+  /* Even more compact for very small screens */
+  .container, .container-fluid {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+  
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  .btn {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+  
+  .card-body {
+    padding: 0.5rem !important;
+  }
+  
+  .form-control {
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+  
+  .table {
+    font-size: 0.8rem !important;
+  }
+  
+  .table td, .table th {
+    padding: 0.4rem !important;
+  }
+}
+
+/* Product cards specific adjustments */
+@media (max-width: 768px) {
+  .product-card .card-img-top {
+    height: 150px !important;
+  }
+  
+  .product-card .card-title {
+    font-size: 1rem !important;
+  }
+  
+  .product-card .card-text {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* Category cards specific adjustments */
+@media (max-width: 768px) {
+  .category-card .card-img-top {
+    height: 120px !important;
+  }
+  
+  .category-card .card-title {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Admin pages adjustments */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    display: none !important;
+  }
+  
+  .admin-content {
+    margin-left: 0 !important;
+  }
+  
+  .admin-navbar {
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* Form adjustments for mobile */
+@media (max-width: 768px) {
+  .form-row .col {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    font-size: 0.875rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+}
+
+/* Navigation adjustments */
+@media (max-width: 768px) {
+  .navbar-toggler {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 1rem !important;
+  }
+  
+  .navbar-collapse {
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* Footer adjustments */
+@media (max-width: 768px) {
+  .footer {
+    text-align: center !important;
+    padding: 1rem 0 !important;
+  }
+  
+  .footer .row > div {
+    margin-bottom: 1rem !important;
+  }
+}

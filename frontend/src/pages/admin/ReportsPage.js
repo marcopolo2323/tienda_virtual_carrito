@@ -163,20 +163,26 @@ const ReportsPage = () => {
     
     const { daily_sales, total_revenue, order_count, average_order_value, revenue_by_payment_method } = salesData;
     
+    // Ensure all values have defaults
+    const safeTotalRevenue = total_revenue || 0;
+    const safeOrderCount = order_count || 0;
+    const safeAverageOrderValue = average_order_value || 0;
+    const safeDailySales = daily_sales || [];
+    
     // Prepare data for line chart
     const lineChartData = {
-      labels: daily_sales.map(item => item.date),
+      labels: safeDailySales.map(item => item.date),
       datasets: [
         {
           label: 'Revenue',
-          data: daily_sales.map(item => item.revenue),
+          data: safeDailySales.map(item => item.revenue || 0),
           borderColor: 'rgba(75, 192, 192, 1)',
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           tension: 0.1,
         },
         {
           label: 'Orders',
-          data: daily_sales.map(item => item.order_count),
+          data: safeDailySales.map(item => item.order_count || 0),
           borderColor: 'rgba(153, 102, 255, 1)',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           tension: 0.1,
@@ -246,7 +252,7 @@ const ReportsPage = () => {
             <Card className="h-100">
               <Card.Body className="text-center">
                 <h6 className="text-muted">Total Revenue</h6>
-                <h3 className="mb-0">${total_revenue.toFixed(2)}</h3>
+                <h3 className="mb-0">${safeTotalRevenue.toFixed(2)}</h3>
               </Card.Body>
             </Card>
           </Col>
@@ -254,7 +260,7 @@ const ReportsPage = () => {
             <Card className="h-100">
               <Card.Body className="text-center">
                 <h6 className="text-muted">Total Orders</h6>
-                <h3 className="mb-0">{order_count}</h3>
+                <h3 className="mb-0">{safeOrderCount}</h3>
               </Card.Body>
             </Card>
           </Col>
@@ -262,7 +268,7 @@ const ReportsPage = () => {
             <Card className="h-100">
               <Card.Body className="text-center">
                 <h6 className="text-muted">Average Order Value</h6>
-                <h3 className="mb-0">${average_order_value.toFixed(2)}</h3>
+                <h3 className="mb-0">${safeAverageOrderValue.toFixed(2)}</h3>
               </Card.Body>
             </Card>
           </Col>

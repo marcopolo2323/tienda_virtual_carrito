@@ -1,95 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Button, Carousel } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import CategoryList from '../components/CategoryList';
 import FeaturedProducts from '../components/FeaturedProducts';
+import MinimalistBanner from '../components/MinimalistBanner';
 
 const HomePage = () => {
 
-  // Hero carousel items
-  const carouselItems = [
-    {
-      id: 1,
-      image: 'https://picsum.photos/1200/400',
-      title: 'Welcome to Carrito Shop',
-      description: 'Your one-stop shop for all your needs',
-      link: '/products'
-    },
-    {
-      id: 2,
-      image: 'https://picsum.photos/1200/400',
-      title: 'New Arrivals',
-      description: 'Check out our latest products',
-      link: '/products?sort=newest'
-    },
-    {
-      id: 3,
-      image: 'https://picsum.photos/1200/400',
-      title: 'Special Offers',
-      description: 'Limited time discounts on selected items',
-      link: '/products?discount=true'
-    }
-  ];
-
   return (
-    <Container>
-      {/* Hero Carousel */}
-      <Carousel className="mb-5">
-        {carouselItems.map(item => (
-          <Carousel.Item key={item.id}>
-            <img
-              className="d-block w-100"
-              src={item.image}
-              alt={item.title}
-            />
-            <Carousel.Caption>
-              <h2>{item.title}</h2>
-              <p>{item.description}</p>
-              <Link to={item.link}>
-                <Button variant="primary">Shop Now</Button>
-              </Link>
-            </Carousel.Caption>
-          </Carousel.Item>
-        ))}
-      </Carousel>
+    <div className="minimalist-homepage">
+      {/* Minimalist Hero Banner */}
+      <MinimalistBanner />
  
       {/* Featured Categories */}
-      <section className="mb-5">
-        <h2 className="text-center mb-4">Shop by Category</h2>
+      <section className="mb-minimal-lg">
+        <div className="text-center mb-minimal">
+          <h2>Categorías</h2>
+          <p className="text-muted">Encuentra lo que necesitas</p>
+        </div>
         <CategoryList limit={4} />
-        <div className="text-center mt-3">
+        <div className="text-center mt-4">
           <Link to="/products">
-            <Button variant="secondary">View All Categories</Button>
+            <Button variant="ghost">Ver todas las categorías</Button>
           </Link>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="mb-5">
-        <h2 className="text-center mb-4">Featured Products</h2>
+      <section className="mb-minimal-lg">
+        <div className="text-center mb-minimal">
+          <h2>Productos Destacados</h2>
+          <p className="text-muted">Los más populares</p>
+        </div>
         <FeaturedProducts limit={8} />
-        <div className="text-center mt-3">
+        <div className="text-center mt-4">
           <Link to="/products">
-            <Button variant="secondary">View All Products</Button>
+            <Button variant="primary">Ver todos los productos</Button>
           </Link>
         </div>
       </section>
 
-      {/* Promotional Banner */}
-      <section className="mb-5">
-        <div className="bg-light p-4 rounded">
+      {/* Newsletter Section */}
+      <section className="mb-minimal-lg">
+        <div className="minimalist-newsletter">
           <Row className="align-items-center">
             <Col md={8}>
-              <h3>Subscribe to Our Newsletter</h3>
-              <p>Stay updated with our latest products and special offers.</p>
+              <h3 className="mb-2">Mantente informado</h3>
+              <p className="text-muted mb-0">Recibe las últimas novedades y ofertas especiales.</p>
             </Col>
-            <Col md={4} className="text-md-end">
-              <Button variant="primary">Subscribe Now</Button>
+            <Col md={4} className="text-md-end mt-3 mt-md-0">
+              <Button variant="outline-primary">Suscribirse</Button>
             </Col>
           </Row>
         </div>
       </section>
-    </Container>
+    </div>
   );
 };
 

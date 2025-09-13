@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Card, Button, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import useCartStore from '../store/cartStore';
+import MinimalistButton from './MinimalistButton';
 
 const ProductCard = ({ product }) => {
   const { loading, addToCart } = useCartStore();
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+
 
   const handleAddToCart = () => {
     addToCart(product.id, 1);
@@ -47,7 +49,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <Card className="h-100 product-card">
+    <Card className="h-100 product-card minimalist-card">
       {product.discount_percent > 0 && (
         <div className="product-badge">
           <Badge bg="danger">-{product.discount_percent}%</Badge>
@@ -86,7 +88,7 @@ const ProductCard = ({ product }) => {
         </Link>
         
         <Card.Text className="text-muted small mb-2">
-          {product.category?.name || 'Sin categoría'}
+          {product.category_name || product.Category?.name || product.category?.name || 'Sin categoría'}
         </Card.Text>
         
         {/* Debug info en desarrollo */}

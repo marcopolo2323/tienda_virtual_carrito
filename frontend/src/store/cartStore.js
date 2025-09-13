@@ -657,18 +657,18 @@ const useCartStore = create((set, get) => ({
 
   // Función de inicialización automática del carrito
   initializeCart: async () => {
-    console.log('🚀 Inicializando carrito...');
+    // Inicializando carrito
     
     if (get().isAuthenticated()) {
       // Usuario autenticado - sincronizar carrito local con servidor
-      console.log('👤 Usuario autenticado, sincronizando carrito...');
+      // Usuario autenticado, sincronizando carrito
       await get().syncLocalCartWithServer();
     } else {
       // Usuario no autenticado - cargar carrito local
-      console.log('👤 Usuario no autenticado, cargando carrito local...');
+      // Usuario no autenticado, cargando carrito local
       const loaded = get().loadLocalCart();
       if (!loaded) {
-        console.log('📭 No hay carrito local, inicializando vacío');
+        // No hay carrito local, inicializando vacío
         set({
           items: [],
           total: 0,

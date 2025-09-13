@@ -44,7 +44,7 @@ const useBannerStore = create(
         try {
           const response = await bannerService.getActiveBanners();
           set({
-            activeBanners: response.banners || [],
+            activeBanners: response.data || [],
             loading: { ...get().loading, activeBanners: false }
           });
         } catch (error) {
@@ -66,7 +66,7 @@ const useBannerStore = create(
         try {
           const response = await bannerService.getBanners(page, limit, activeFilter);
           set({
-            banners: response.banners || [],
+            banners: response.data || [],
             pagination: response.pagination || get().pagination,
             loading: { ...get().loading, banners: false }
           });
@@ -87,17 +87,10 @@ const useBannerStore = create(
         }));
 
         try {
-          console.log('Creating banner with data:', {
-            hasImage: bannerData.has('image'),
-            title: bannerData.get('title'),
-            description: bannerData.get('description'),
-            link_url: bannerData.get('link_url'),
-            button_text: bannerData.get('button_text'),
-            active: bannerData.get('active'),
-            display_order: bannerData.get('display_order')
-          });
+          console.log('Creating banner with data:', bannerData);
 
           const response = await bannerService.createBanner(bannerData);
+          console.log('✅ Banner created successfully:', response);
           
           // Agregar el nuevo banner al inicio de la lista
           const currentBanners = get().banners;
@@ -105,6 +98,7 @@ const useBannerStore = create(
             banners: [response.banner, ...currentBanners],
             loading: { ...get().loading, create: false }
           });
+          console.log('✅ Banner added to store. Total banners:', get().banners.length);
 
           toast.success('Banner created successfully!');
           return response.banner;

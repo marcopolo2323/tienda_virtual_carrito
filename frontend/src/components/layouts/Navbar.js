@@ -24,11 +24,10 @@ const MainNavbar = () => {
   };
   
   return (
-    <Navbar bg="white" expand="lg" className="shadow-sm py-3" sticky="top">
+    <Navbar bg="white" expand="lg" className="minimalist-navbar" sticky="top">
       <Container>
-        <Navbar.Brand as={Link} to="/" className="fw-bold">
-          <i className="bi bi-cart4 me-2 text-primary"></i>
-          Carrito
+        <Navbar.Brand as={Link} to="/" className="minimalist-brand">
+          Tienda
         </Navbar.Brand>
         
         <Navbar.Toggle aria-controls="main-navbar" />
@@ -43,15 +42,15 @@ const MainNavbar = () => {
             </Nav.Link>
           </Nav>
           
-          <Form className="d-flex mx-auto" onSubmit={handleSearch}>
+          <Form className="d-flex mx-auto minimalist-search" onSubmit={handleSearch}>
             <Form.Control
               type="search"
-              placeholder="Buscar productos..."
+              placeholder="Buscar..."
               className="me-2"
               aria-label="Search"
               name="search"
             />
-            <Button variant="outline-primary" type="submit">
+            <Button variant="ghost" type="submit" className="btn-search">
               <i className="bi bi-search"></i>
             </Button>
           </Form>
@@ -93,14 +92,14 @@ const MainNavbar = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               ) : (
-                <div className="ms-2">
+                <div className="ms-2 d-flex gap-2">
                   <Link to="/login">
-                    <Button variant="outline-primary" className="me-2">
+                    <Button variant="ghost" size="sm">
                       Iniciar Sesión
                     </Button>
                   </Link>
                   <Link to="/register">
-                    <Button variant="primary">
+                    <Button variant="primary" size="sm">
                       Registrarse
                     </Button>
                   </Link>
