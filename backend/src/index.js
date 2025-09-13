@@ -137,6 +137,40 @@ app.get('/', (req, res) => {
   });
 });
 
+// Ruta de seeding de la base de datos
+  app.get('/api/seed', async (req, res) => {
+    try {
+      console.log('🌱 Iniciando seeding de la base de datos...');
+      
+      // Importar el seeder
+      const seedDatabase = require('./../scripts/seed');
+      
+      // Ejecutar el seeding
+      await seedDatabase();
+      
+      console.log('✅ Seeding completado exitosamente');
+      
+      res.json({ 
+        success: true,
+        message: 'Base de datos poblada exitosamente',
+        timestamp: new Date().toISOString(),
+        data: {
+          admin: 'admin@gmail.com / admin123',
+          categories: 5,
+          products: 8,
+          banners: 3
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error durante el seeding:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Error al poblar la base de datos',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
 /**
  * Rutas de desarrollo y diagnóstico
  * Solo disponibles en entorno de desarrollo
@@ -168,41 +202,6 @@ if (isDev) {
       res.status(500).json({
         status: 'unhealthy',
         message: 'Error en la API',
-        error: error.message,
-        timestamp: new Date().toISOString()
-      });
-    }
-  });
-  
-  // Ruta de seeding de la base de datos
-  app.get('/api/seed', async (req, res) => {
-    try {
-      console.log('🌱 Iniciando seeding de la base de datos...');
-      
-      // Importar el seeder
-      const seedDatabase = require('./../scripts/seed');
-      
-      // Ejecutar el seeding
-      await seedDatabase();
-      
-      console.log('✅ Seeding completado exitosamente');
-      
-      res.json({ 
-        success: true,
-        message: 'Base de datos poblada exitosamente',
-        timestamp: new Date().toISOString(),
-        data: {
-          admin: 'admin@gmail.com / admin123',
-          categories: 5,
-          products: 8,
-          banners: 3
-        }
-      });
-    } catch (error) {
-      console.error('❌ Error durante el seeding:', error);
-      res.status(500).json({ 
-        success: false,
-        message: 'Error al poblar la base de datos',
         error: error.message,
         timestamp: new Date().toISOString()
       });
