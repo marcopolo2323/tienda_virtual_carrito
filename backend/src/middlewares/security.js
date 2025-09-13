@@ -46,14 +46,22 @@ const securityHeaders = helmet({
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
+      process.env.CORS_ORIGIN,
       process.env.FRONTEND_URL,
       'http://localhost:3000',
+      'https://tiendadiego.vercel.app',
+      'https://tienda-diego.vercel.app',
       'https://tu-dominio.com'
     ];
     
+    console.log('🔒 CORS check - Origin:', origin);
+    console.log('🔒 CORS check - Allowed origins:', allowedOrigins);
+    
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log('✅ CORS permitido para:', origin);
       callback(null, true);
     } else {
+      console.log('❌ CORS denegado para:', origin);
       callback(new Error('No permitido por CORS'));
     }
   },
