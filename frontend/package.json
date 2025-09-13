@@ -27,7 +27,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:vercel": "npm run build && echo 'Build completed for Vercel'",
+    "analyze": "npm run build && npx serve -s build",
+    "preview": "npm run build && npx serve -s build -l 3000"
   },
   "eslintConfig": {
     "extends": [

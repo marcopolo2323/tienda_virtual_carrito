@@ -8,7 +8,22 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const compression = require('compression');
+const morgan = require('morgan');
 require('dotenv').config();
+
+// Importar middlewares de seguridad
+const { 
+  securityHeaders, 
+  cors: securityCors, 
+  sanitizeInput, 
+  sqlInjectionProtection, 
+  xssProtection,
+  fileUploadSecurity,
+  securityLogger,
+  apiLimiter,
+  authLimiter
+} = require('./middlewares/security');
 
 // Importar conexión a la base de datos
 const { sequelize } = require('./models/index');
@@ -32,13 +47,42 @@ const isDev = process.env.NODE_ENV === 'development';
 /**
  * Configuración de middleware principal
  */
-// Seguridad y CORS
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Headers de seguridad
+app.use(securityHeaders);
+
+// CORS con configuración de seguridad
+app.use(securityCors);
+
+// Rate limiting general
+app.use('/api', apiLimiter);
+
+// Rate limiting para autenticación
+app.use('/api/auth', authLimiter);
+
+// Logging de seguridad
+app.use(securityLogger);
+
+// Sanitización de entrada
+app.use(sanitizeInput);
+
+// Protección contra inyección SQL
+app.use(sqlInjectionProtection);
+
+// Protección contra XSS
+app.use(xssProtection);
+
+// Seguridad de archivos
+app.use(fileUploadSecurity);
+
+// Compresión de respuestas
+app.use(compression());
+
+// Logging de requests
+if (isDev) {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('combined'));
+}
 
 // Parseo de cuerpo de peticiones
 app.use(express.json({ limit: '10mb' })); // Reducido para mejor rendimiento

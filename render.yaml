@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: tienda-backend
+    env: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: MERCADOPAGO_ACCESS_TOKEN
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
+    branch: main
+
+  - type: pserv
+    name: tienda-postgres
+    env: postgresql
+    plan: starter
+    region: oregon
+    postgresMajorVersion: 15
+    maxConnections: 20
+    autoDeploy: true

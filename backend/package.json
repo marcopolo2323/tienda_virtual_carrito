@@ -9,7 +9,12 @@
     "dev": "nodemon src/index.js",
     "seed": "node scripts/seed.js",
     "clean-logs": "node scripts/clean-logs.js",
-    "build": "npm install"
+    "build": "npm install",
+    "start:prod": "NODE_ENV=production node src/index.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "seed:prod": "NODE_ENV=production node scripts/seed.js",
+    "health": "curl -f http://localhost:5000/api/health || exit 1"
   },
   "keywords": [],
   "author": "",
@@ -20,13 +25,18 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
     "mercadopago": "^2.8.0",
     "multer-storage-cloudinary": "^4.0.0",
     "sequelize": "^6.35.0",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "jsonwebtoken": "^9.0.0",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "validator": "^13.11.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
