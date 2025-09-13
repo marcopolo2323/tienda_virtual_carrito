@@ -173,6 +173,41 @@ if (isDev) {
     }
   });
   
+  // Ruta de seeding de la base de datos
+  app.get('/api/seed', async (req, res) => {
+    try {
+      console.log('🌱 Iniciando seeding de la base de datos...');
+      
+      // Importar el seeder
+      const seedDatabase = require('./utils/seeder');
+      
+      // Ejecutar el seeding
+      await seedDatabase();
+      
+      console.log('✅ Seeding completado exitosamente');
+      
+      res.json({ 
+        success: true,
+        message: 'Base de datos poblada exitosamente',
+        timestamp: new Date().toISOString(),
+        data: {
+          admin: 'admin@gmail.com / admin123',
+          categories: 5,
+          products: 8,
+          banners: 3
+        }
+      });
+    } catch (error) {
+      console.error('❌ Error durante el seeding:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Error al poblar la base de datos',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+  
   // Ruta de prueba para uploads locales
   app.get('/api/test-uploads', (req, res) => {
     const uploadsPath = path.join(__dirname, 'uploads');
@@ -185,7 +220,7 @@ if (isDev) {
           files: []
         });
       }
-      
+
       const files = fs.readdirSync(uploadsPath);
       res.json({
         uploadsPath,
