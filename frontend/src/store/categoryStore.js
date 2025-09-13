@@ -11,7 +11,7 @@ const useCategoryStore = create((set) => ({
   fetchCategories: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get('/categories');
+      const response = await axios.get('/api/categories');
       console.log('🔍 CategoryStore - Full response:', response.data);
       console.log('🔍 CategoryStore - Categories:', response.data.categories);
       

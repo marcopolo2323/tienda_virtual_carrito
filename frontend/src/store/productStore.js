@@ -60,7 +60,7 @@ const useProductStore = create((set) => ({
   fetchProducts: async ({ page = 1, limit = 10, category = null, search = '', sort = '' }) => {
     set({ loading: true });
     try {
-      let url = `/products?page=${page}&limit=${limit}`;
+      let url = `/api/products?page=${page}&limit=${limit}`;
       if (category) url += `&category=${category}`;
       if (search) url += `&search=${search}`;
       if (sort) url += `&sort=${sort}`;
@@ -99,7 +99,7 @@ const useProductStore = create((set) => ({
   fetchProductById: async (productId) => {
     set({ loading: true });
     try {
-      const response = await axios.get(`/products/${productId}`);
+      const response = await axios.get(`/api/products/${productId}`);
       const normalizedProduct = useProductStore.getState().normalizeProduct(response.data);
       
       console.log('Product fetched:', {
@@ -128,7 +128,7 @@ const useProductStore = create((set) => ({
   fetchFeaturedProducts: async (limit = 4) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.get(`/products/featured?limit=${limit}`);
+      const response = await axios.get(`/api/products/featured?limit=${limit}`);
       
       // Validar la respuesta y asegurar que sea un array
       let rawFeaturedProducts = [];

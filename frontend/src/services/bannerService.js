@@ -60,7 +60,7 @@ class BannerService {
   // Obtener banners activos (público)
   async getActiveBanners() {
     try {
-      const response = await axios.get('/banners/active');
+      const response = await axios.get('/api/banners/active');
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Error al obtener los banners activos');
