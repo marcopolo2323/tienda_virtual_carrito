@@ -13,6 +13,7 @@ else
   git commit -m "Fix: Corregir vercel.json y limpiar archivos innecesarios
 
 - Cambiar routes por rewrites para evitar conflicto
+- Eliminar variable de entorno que causaba error de secreto
 - Eliminar archivos de documentación temporal
 - Limpiar scripts duplicados
 - Asegurar que axios use URLs correctas en producción"
