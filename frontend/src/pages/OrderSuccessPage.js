@@ -26,6 +26,7 @@ const OrderSuccessPage = () => {
         console.log('🔄 Buscando detalles de orden:', orderId);
         const response = await axios.get(`/orders/${orderId}`);
         console.log('✅ Respuesta de orden:', response.data);
+        console.log('📋 Estructura de order:', JSON.stringify(response.data.order || response.data, null, 2));
         setOrder(response.data.order || response.data);
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
@@ -82,15 +83,23 @@ const OrderSuccessPage = () => {
             <div className="row mb-4">
               <div className="col-md-6">
                 <h5>Información de Envío</h5>
-                <p className="mb-1">
-                  {order.shipping_info.first_name} {order.shipping_info.last_name}
-                </p>
-                <p className="mb-1">{order.shipping_info.address}</p>
-                <p className="mb-1">
-                  {order.shipping_info.city}, {order.shipping_info.state} {order.shipping_info.zip_code}
-                </p>
-                <p className="mb-1">{order.shipping_info.country}</p>
-                <p className="mb-1">{order.shipping_info.phone}</p>
+                {order.shipping_info ? (
+                  <>
+                    <p className="mb-1">
+                      {order.shipping_info.first_name || ''} {order.shipping_info.last_name || ''}
+                    </p>
+                    <p className="mb-1">{order.shipping_info.address || ''}</p>
+                    <p className="mb-1">
+                      {order.shipping_info.city || ''}, {order.shipping_info.state || ''} {order.shipping_info.zip_code || ''}
+                    </p>
+                    <p className="mb-1">{order.shipping_info.country || ''}</p>
+                    <p className="mb-1">{order.shipping_info.phone || ''}</p>
+                  </>
+                ) : order.shipping_address ? (
+                  <p className="mb-1">{order.shipping_address}</p>
+                ) : (
+                  <p className="mb-1 text-muted">Información de envío no disponible</p>
+                )}
               </div>
               <div className="col-md-6">
                 <h5>Información de Pago</h5>
