@@ -43,8 +43,21 @@ router.post('/create-preference', authenticate, async (req, res) => {
       },
 
       notification_url: `${API_URL}/api/payment/webhooks/mercadopago`,
-      external_reference: `order_${req.user.id}_${Date.now()}`
-      // REMOVER auto_return temporalmente
+      external_reference: `order_${req.user.id}_${Date.now()}`,
+      
+      // Configuración para métodos de pago peruanos
+      payment_methods: {
+        excluded_payment_methods: [],
+        excluded_payment_types: [],
+        installments: 12
+      },
+      
+      // Configuración específica para Perú
+      country_id: 'PE',
+      site_id: 'MPE',
+      
+      // Auto return para mejor UX
+      auto_return: 'approved'
     };
 
     // Agregar payer solo si tiene email
