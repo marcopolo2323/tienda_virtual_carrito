@@ -315,8 +315,8 @@ const OrderDetailPage = () => {
                           <h3>Información del Cliente</h3>
                           <p><strong>Nombre:</strong> ${order.User ? `${order.User.first_name || ''} ${order.User.last_name || ''}`.trim() : 'N/A'}</p>
                           <p><strong>Email:</strong> ${order.User ? order.User.email : 'N/A'}</p>
-                          <p><strong>Teléfono:</strong> ${order.User ? order.User.phone : 'N/A'}</p>
-                          <p><strong>Dirección:</strong> ${order.shipping_address || 'N/A'}</p>
+                          <p><strong>Teléfono Celular:</strong> ${order.User ? order.User.phone : 'N/A'}</p>
+                          <p><strong>Dirección de Envío:</strong> ${order.shipping_address || 'N/A'}</p>
                         </div>
                         
                         <table class="items-table">
