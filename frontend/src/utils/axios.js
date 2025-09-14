@@ -92,4 +92,4 @@ const api = {
   patch: (url, data, config = {}) => makeRequest('PATCH', url, data, config)
 };
 
-export default api;
+export default apiClient;
