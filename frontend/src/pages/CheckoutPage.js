@@ -222,14 +222,20 @@ const CheckoutPage = () => {
       
       // Redirigir a página de éxito
       if (response.data?.order?.id) {
+        console.log('✅ ID de orden válido recibido para Yape:', response.data.order.id);
+        console.log('🔄 Iniciando limpieza de carrito...');
+        
         // Limpiar carrito después de redirigir para no bloquear la navegación
         clearCart();
+        
+        console.log('🔄 Programando redirección en 100ms...');
         // Pequeño delay para asegurar que la redirección funcione
         setTimeout(() => {
+          console.log('🚀 Ejecutando redirección a:', `/order-success/${response.data.order.id}`);
           navigate(`/order-success/${response.data.order.id}`);
         }, 100);
       } else {
-        console.error('No se recibió ID de orden válido para Yape');
+        console.error('❌ No se recibió ID de orden válido para Yape');
         setError('No se pudo obtener el ID de la orden. Verifica tu historial de pedidos.');
       }
       
@@ -324,15 +330,21 @@ const CheckoutPage = () => {
         console.log('Order ID:', response.data?.order?.id);
         
         if (response.data?.order?.id) {
+          console.log('✅ ID de orden válido recibido:', response.data.order.id);
+          console.log('🔄 Iniciando limpieza de carrito...');
+          
           // El carrito se limpia automáticamente en el backend
           // Solo limpiar el estado local si es necesario
           clearCart();
+          
+          console.log('🔄 Programando redirección en 100ms...');
           // Pequeño delay para asegurar que la redirección funcione
           setTimeout(() => {
+            console.log('🚀 Ejecutando redirección a:', `/order-success/${response.data.order.id}`);
             navigate(`/order-success/${response.data.order.id}`);
           }, 100);
         } else {
-          console.error('No se recibió ID de orden válido');
+          console.error('❌ No se recibió ID de orden válido');
           setError('No se pudo obtener el ID de la orden. Verifica tu historial de pedidos.');
         }
       }

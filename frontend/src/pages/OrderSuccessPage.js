@@ -4,24 +4,31 @@ import { Container, Card, Button, Alert } from 'react-bootstrap';
 import axios from '../utils/axios';
 
 const OrderSuccessPage = () => {
-  const { orderId } = useParams();
+  const { id: orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      console.log('=== ORDER SUCCESS PAGE ===');
+      console.log('Order ID from params:', orderId);
+      console.log('Order ID type:', typeof orderId);
+      
       if (!orderId || orderId === 'undefined') {
+        console.error('❌ No se encontró ID de orden válido');
         setError('No se encontró el ID de la orden. Verifica tu historial de pedidos.');
         setLoading(false);
         return;
       }
 
       try {
+        console.log('🔄 Buscando detalles de orden:', orderId);
         const response = await axios.get(`/orders/${orderId}`);
+        console.log('✅ Respuesta de orden:', response.data);
         setOrder(response.data.order || response.data);
       } catch (err) {
-        console.error('Error fetching order details:', err);
+        console.error('❌ Error fetching order details:', err);
         setError('Error al cargar los detalles de la orden. Verifica tu historial de pedidos.');
       } finally {
         setLoading(false);
