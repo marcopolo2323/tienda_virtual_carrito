@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Card, Button, Alert, Modal, Row, Col } from 'react-bootstrap';
-import { QrCode, Download, CheckCircle } from 'lucide-react';
+import { Card, Button, Alert, Modal, Row, Col, Form } from 'react-bootstrap';
+import { QrCode, Download, CheckCircle, Camera, MessageCircle } from 'lucide-react';
 
 const YapePayment = ({ orderData, onPaymentComplete }) => {
   const [showQR, setShowQR] = useState(false);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPaymentProof, setShowPaymentProof] = useState(false);
+  const [paymentProof, setPaymentProof] = useState(null);
+  const [whatsappSent, setWhatsappSent] = useState(false);
 
   // Datos del Yape (en producción esto vendría del backend)
   const yapeData = {
@@ -28,18 +31,56 @@ const YapePayment = ({ orderData, onPaymentComplete }) => {
       
       setPaymentConfirmed(true);
       setLoading(false);
+      setShowPaymentProof(true);
       
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+      setLoading(false);
+    }
+  };
+
+  const handlePaymentProofUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setPaymentProof(file);
+    }
+  };
+
+  const handleSendToWhatsApp = () => {
+    if (!paymentProof) {
+      alert('Por favor, selecciona una imagen de la captura de pago');
+      return;
+    }
+
+    const whatsappNumber = '51934819598';
+    const message = `Hola! Realicé un pago con Yape para la orden ${yapeData.reference} por S/ ${yapeData.amount.toFixed(2)}. Adjunto la captura de pantalla.`;
+    
+    // Crear URL de WhatsApp con mensaje
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    
+    // Abrir WhatsApp
+    window.open(whatsappUrl, '_blank');
+    setWhatsappSent(true);
+  };
+
+  const handleCompletePayment = async () => {
+    if (!whatsappSent) {
+      alert('Por favor, envía la captura por WhatsApp antes de continuar');
+      return;
+    }
+
+    try {
       // Notificar al componente padre
       if (onPaymentComplete) {
         onPaymentComplete({
           method: 'yape',
           reference: yapeData.reference,
-          amount: yapeData.amount
+          amount: yapeData.amount,
+          payment_proof: paymentProof
         });
       }
     } catch (error) {
-      console.error('Error confirming payment:', error);
-      setLoading(false);
+      console.error('Error completing payment:', error);
     }
   };
 
@@ -50,12 +91,77 @@ const YapePayment = ({ orderData, onPaymentComplete }) => {
       reference: yapeData.reference,
       amount: yapeData.amount,
       method: 'Yape',
-      date: new Date().toLocaleString('es-PE')
+      date: new Date().toLocaleString('es-PE'),
+      items: orderData?.items || [],
+      subtotal: orderData?.subtotal || 0,
+      shipping: orderData?.shipping || 0,
+      total: orderData?.total || 0
     };
     
-    // Aquí se generaría el PDF real
-    console.log('Generating receipt:', receiptData);
-    alert('Boleta PDF generada (funcionalidad en desarrollo)');
+    // Crear contenido HTML para la boleta
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Boleta de Pago - ${receiptData.reference}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+          .details { margin: 20px 0; }
+          .item { display: flex; justify-content: space-between; margin: 5px 0; }
+          .total { font-weight: bold; font-size: 18px; border-top: 1px solid #333; padding-top: 10px; }
+          .method { background: #e8f5e8; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>BOLETA DE PAGO</h1>
+          <p>Referencia: ${receiptData.reference}</p>
+          <p>Fecha: ${receiptData.date}</p>
+        </div>
+        
+        <div class="details">
+          <h3>Detalles del Pago</h3>
+          <div class="method">
+            <strong>Método de Pago:</strong> ${receiptData.method}<br>
+            <strong>Referencia:</strong> ${receiptData.reference}<br>
+            <strong>Monto:</strong> S/ ${receiptData.amount.toFixed(2)}
+          </div>
+          
+          <h3>Resumen de la Orden</h3>
+          <div class="item">
+            <span>Subtotal:</span>
+            <span>S/ ${receiptData.subtotal.toFixed(2)}</span>
+          </div>
+          <div class="item">
+            <span>Envío:</span>
+            <span>S/ ${receiptData.shipping.toFixed(2)}</span>
+          </div>
+          <div class="item total">
+            <span>Total:</span>
+            <span>S/ ${receiptData.total.toFixed(2)}</span>
+          </div>
+        </div>
+        
+        <div class="details">
+          <p><strong>Estado:</strong> Pago pendiente de validación</p>
+          <p><strong>Nota:</strong> Envía la captura de pantalla del pago por WhatsApp para validar tu orden.</p>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    // Crear blob y descargar
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `boleta-${receiptData.reference}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -168,6 +274,65 @@ const YapePayment = ({ orderData, onPaymentComplete }) => {
         </Modal.Footer>
       </Modal>
 
+      {/* Modal para captura de pago */}
+      <Modal show={showPaymentProof} onHide={() => setShowPaymentProof(false)} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <Camera className="me-2" />
+            Validar Pago con Yape
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Alert variant="info">
+            <strong>Instrucciones:</strong>
+            <ol className="mb-0 mt-2">
+              <li>Realiza el pago con Yape usando el QR</li>
+              <li>Toma una captura de pantalla del comprobante</li>
+              <li>Sube la imagen aquí</li>
+              <li>Envía la captura por WhatsApp para validación</li>
+            </ol>
+          </Alert>
+          
+          <Form.Group className="mb-3">
+            <Form.Label>Captura de Pantalla del Pago</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handlePaymentProofUpload}
+              placeholder="Selecciona la captura de pantalla"
+            />
+            {paymentProof && (
+              <div className="mt-2">
+                <small className="text-success">
+                  ✓ Archivo seleccionado: {paymentProof.name}
+                </small>
+              </div>
+            )}
+          </Form.Group>
+          
+          <div className="d-grid gap-2">
+            <Button 
+              variant="success" 
+              onClick={handleSendToWhatsApp}
+              disabled={!paymentProof}
+            >
+              <MessageCircle className="me-2" />
+              Enviar por WhatsApp
+            </Button>
+            
+            {whatsappSent && (
+              <Button 
+                variant="primary" 
+                onClick={handleCompletePayment}
+              >
+                <CheckCircle className="me-2" />
+                Completar Pago
+              </Button>
+            )}
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {/* Botón de descarga de boleta */}
       {paymentConfirmed && (
         <div className="text-center mt-3">
@@ -177,7 +342,7 @@ const YapePayment = ({ orderData, onPaymentComplete }) => {
             className="me-2"
           >
             <Download className="me-2" />
-            Descargar Boleta PDF
+            Descargar Boleta
           </Button>
         </div>
       )}
