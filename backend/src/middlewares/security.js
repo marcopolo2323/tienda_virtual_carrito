@@ -31,29 +31,27 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const authLimiter = createRateLimit(
   15 * 60 * 1000, // 15 minutos
-  isDev ? 50 : 5, // 50 intentos en desarrollo, 5 en producción
+  isDev ? 50 : 20, // 50 intentos en desarrollo, 20 en producción
   'Demasiados intentos de login, intenta de nuevo en 15 minutos'
 );
 
 const apiLimiter = createRateLimit(
   15 * 60 * 1000, // 15 minutos
-  isDev ? 1000 : 100, // 1000 peticiones en desarrollo, 100 en producción
+  isDev ? 1000 : 500, // 1000 peticiones en desarrollo, 500 en producción
   'Demasiadas peticiones, intenta de nuevo más tarde'
 );
 
 const strictLimiter = createRateLimit(
   15 * 60 * 1000, // 15 minutos
-  isDev ? 100 : 10, // 100 peticiones en desarrollo, 10 en producción
+  isDev ? 100 : 50, // 100 peticiones en desarrollo, 50 en producción
   'Demasiadas peticiones, intenta de nuevo más tarde'
 );
 
-// Logging de configuración en desarrollo
-if (isDev) {
-  console.log('🔒 Rate limiting configurado para desarrollo:');
-  console.log(`   📊 API General: ${isDev ? 1000 : 100} peticiones/15min`);
-  console.log(`   🔐 Autenticación: ${isDev ? 50 : 5} intentos/15min`);
-  console.log(`   🚫 Estricto: ${isDev ? 100 : 10} peticiones/15min`);
-}
+// Logging de configuración
+console.log('🔒 Rate limiting configurado:');
+console.log(`   📊 API General: ${isDev ? 1000 : 500} peticiones/15min`);
+console.log(`   🔐 Autenticación: ${isDev ? 50 : 20} intentos/15min`);
+console.log(`   🚫 Estricto: ${isDev ? 100 : 50} peticiones/15min`);
 
 // Security headers
 const securityHeaders = helmet({
