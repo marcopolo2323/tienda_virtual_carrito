@@ -48,7 +48,7 @@ const useBannerStore = create(
             loading: { ...get().loading, activeBanners: false }
           });
         } catch (error) {
-          console.error('Error fetching active banners:', error);
+          console.error('Error obteniendo banners activos:', error);
           set({
             errors: { ...get().errors, activeBanners: error.message },
             loading: { ...get().loading, activeBanners: false }
@@ -71,7 +71,7 @@ const useBannerStore = create(
             loading: { ...get().loading, banners: false }
           });
         } catch (error) {
-          console.error('Error fetching banners:', error);
+          console.error('Error obteniendo banners:', error);
           set({
             errors: { ...get().errors, banners: error.message },
             loading: { ...get().loading, banners: false }
@@ -103,10 +103,10 @@ const useBannerStore = create(
           toast.success('Banner created successfully!');
           return response.banner;
         } catch (error) {
-          console.error('Error creating banner:', error);
+          console.error('Error creando banner:', error);
           
           // Extraer mensaje de error más detallado
-          let errorMessage = 'Failed to create banner';
+          let errorMessage = 'Error al crear el banner';
           
           if (error.response?.data) {
             if (error.response.data.details) {
@@ -164,13 +164,13 @@ const useBannerStore = create(
             loading: { ...get().loading, update: false }
           });
 
-          toast.success('Banner updated successfully!');
+          toast.success('¡Banner actualizado exitosamente!');
           return response.banner;
         } catch (error) {
-          console.error('Error updating banner:', error);
+          console.error('Error actualizando banner:', error);
           
           // Extraer mensaje de error más detallado
-          let errorMessage = 'Failed to update banner';
+          let errorMessage = 'Error al actualizar el banner';
           
           if (error.response?.data) {
             if (error.response.data.details) {
@@ -214,9 +214,9 @@ const useBannerStore = create(
             loading: { ...get().loading, delete: false }
           });
 
-          toast.success('Banner deleted successfully!');
+          toast.success('¡Banner eliminado exitosamente!');
         } catch (error) {
-          console.error('Error deleting banner:', error);
+          console.error('Error eliminando banner:', error);
           
           let errorMessage = 'Failed to delete banner';
           if (error.response?.data?.message) {
@@ -247,12 +247,12 @@ const useBannerStore = create(
           
           set({ banners: updatedBanners });
           
-          toast.success(`Banner ${active ? 'activated' : 'deactivated'} successfully!`);
+          toast.success(`¡Banner ${active ? 'activado' : 'desactivado'} exitosamente!`);
           return response.banner;
         } catch (error) {
-          console.error('Error toggling banner status:', error);
+          console.error('Error cambiando estado del banner:', error);
           
-          let errorMessage = 'Failed to update banner status';
+          let errorMessage = 'Error al actualizar el estado del banner';
           if (error.response?.data?.message) {
             errorMessage = error.response.data.message;
           } else if (error.message) {
@@ -284,11 +284,11 @@ const useBannerStore = create(
             loading: { ...get().loading, reorder: false }
           });
 
-          toast.success('Banner order updated successfully!');
+          toast.success('¡Orden de banners actualizado exitosamente!');
         } catch (error) {
-          console.error('Error reordering banners:', error);
+          console.error('Error reordenando banners:', error);
           
-          let errorMessage = 'Failed to reorder banners';
+          let errorMessage = 'Error al reordenar los banners';
           if (error.response?.data?.message) {
             errorMessage = error.response.data.message;
           } else if (error.message) {

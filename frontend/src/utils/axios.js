@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-// Configurar la URL base de la API
+// Configurar la URL base de la API (SIN /api al final)
 const getApiBaseUrl = () => {
   // En desarrollo, usar localhost
   if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:5000/api';
+    return 'http://localhost:5000';
   }
   
   // En producción, usar la URL de Render
-  return 'https://tienda-diego-qkm5.onrender.com/api';
+  return 'https://tienda-diego-qkm5.onrender.com';
 };
 
 // Crear instancia de axios con configuración
@@ -23,11 +23,11 @@ const apiClient = axios.create({
 
 // Función para hacer peticiones con URL base forzada
 const makeRequest = (method, url, data = null, config = {}) => {
-  const fullUrl = url.startsWith('/api/') ? url : `/api${url.startsWith('/') ? '' : '/'}${url}`;
+  // NO agregar /api aquí, el interceptor se encarga de eso
   const fullConfig = {
     ...config,
     baseURL: getApiBaseUrl(),
-    url: fullUrl,
+    url: url,
     method: method.toLowerCase()
   };
   
@@ -35,7 +35,7 @@ const makeRequest = (method, url, data = null, config = {}) => {
     fullConfig.data = data;
   }
   
-  console.log('🌐 Petición forzada:', method.toUpperCase(), getApiBaseUrl() + fullUrl);
+  console.log('🌐 Petición forzada:', method.toUpperCase(), getApiBaseUrl() + url);
   return apiClient(fullConfig);
 };
 
@@ -50,9 +50,12 @@ apiClient.interceptors.request.use(
     // Forzar la URL base
     config.baseURL = getApiBaseUrl();
     
-    // Asegurar que la URL incluya /api si no la tiene
-    if (config.url && !config.url.startsWith('/api/') && !config.url.startsWith('http')) {
-      config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+    // Agregar /api al inicio de todas las URLs (si no es una URL completa)
+    if (config.url && !config.url.startsWith('http')) {
+      // Si no empieza con /api, agregarlo
+      if (!config.url.startsWith('/api')) {
+        config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+      }
     }
     
     const token = localStorage.getItem('token');

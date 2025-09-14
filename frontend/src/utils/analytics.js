@@ -31,7 +31,7 @@ export const trackPageView = (pageName, pageTitle) => {
   }
   
   // También enviar a nuestro backend para análisis propio
-  fetch('/api/analytics/page-view', {
+  fetch('/analytics/page-view', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export const trackProductView = (productId, productName, category, price) => {
   }
   
   // Enviar a nuestro backend
-  fetch('/api/analytics/product-view', {
+  fetch('/analytics/product-view', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ export const trackAddToCart = (productId, productName, category, price, quantity
   }
   
   // Enviar a nuestro backend
-  fetch('/api/analytics/add-to-cart', {
+  fetch('/analytics/add-to-cart', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ export const trackPurchase = (transactionId, value, currency = 'USD', items) => 
   }
   
   // Enviar a nuestro backend
-  fetch('/api/analytics/purchase', {
+  fetch('/analytics/purchase', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export const trackSearch = (searchTerm, resultsCount) => {
   }
   
   // Enviar a nuestro backend
-  fetch('/api/analytics/search', {
+  fetch('/analytics/search', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ export const trackSearch = (searchTerm, resultsCount) => {
 // Track user engagement
 export const trackUserEngagement = (action, details = {}) => {
   // Enviar a nuestro backend para análisis de comportamiento
-  fetch('/api/analytics/engagement', {
+  fetch('/analytics/engagement', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

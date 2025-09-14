@@ -211,7 +211,7 @@ const BannerFormPage = () => {
         navigate('/admin/banners');
       }
     } catch (error) {
-      console.error('Error saving banner:', error);
+      console.error('Error guardando banner:', error);
       // El error ya se maneja en el store, no necesitamos hacer nada más aquí
     }
   };
@@ -244,13 +244,13 @@ const BannerFormPage = () => {
         {/* Error Display */}
         {errors.create && (
           <Alert variant="danger" className="mb-4">
-            <strong>Error creating banner:</strong> {errors.create}
+            <strong>Error creando banner:</strong> {errors.create}
           </Alert>
         )}
         
         {errors.update && (
           <Alert variant="danger" className="mb-4">
-            <strong>Error updating banner:</strong> {errors.update}
+            <strong>Error actualizando banner:</strong> {errors.update}
           </Alert>
         )}
 

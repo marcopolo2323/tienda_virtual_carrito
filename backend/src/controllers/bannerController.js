@@ -46,7 +46,7 @@ class BannerController {
         data: banner
       });
     } catch (error) {
-      console.error('Error creating banner:', error);
+      console.error('Error creando banner:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor'
@@ -80,7 +80,7 @@ class BannerController {
         }
       });
     } catch (error) {
-      console.error('Error fetching banners:', error);
+      console.error('Error obteniendo banners:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor'
@@ -105,7 +105,7 @@ class BannerController {
         data: banners
       });
     } catch (error) {
-      console.error('Error fetching active banners:', error);
+      console.error('Error obteniendo banners activos:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor'
@@ -152,7 +152,7 @@ class BannerController {
         data: banner
       });
     } catch (error) {
-      console.error('Error updating banner:', error);
+      console.error('Error actualizando banner:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor'
@@ -183,7 +183,7 @@ class BannerController {
         message: 'Banner eliminado exitosamente'
       });
     } catch (error) {
-      console.error('Error deleting banner:', error);
+      console.error('Error eliminando banner:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor'

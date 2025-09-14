@@ -28,7 +28,7 @@ const ProductRecommendations = ({
       setLoading(true);
       
       // Simular API call - aquí conectarías con tu endpoint de recomendaciones
-      const response = await fetch('/api/recommendations', {
+      const response = await fetch('/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const ProductRecommendations = ({
 
   const fetchTrendingProducts = async () => {
     try {
-      const response = await fetch('/api/products?featured=true&limit=4');
+      const response = await fetch('/products?featured=true&limit=4');
       const data = await response.json();
       if (data.success) {
         setRecommendations(data.products || []);
