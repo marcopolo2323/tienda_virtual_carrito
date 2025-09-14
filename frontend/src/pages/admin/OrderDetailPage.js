@@ -271,8 +271,6 @@ const OrderDetailPage = () => {
                 <span>{formatCurrency(order.shipping_fee)}</span>
               </div>
               <div className="d-flex justify-content-between mb-2">
-                <span>Tax:</span>
-                <span>{formatCurrency(order.tax)}</span>
               </div>
               <div className="d-flex justify-content-between mb-2">
                 <span>Discount:</span>

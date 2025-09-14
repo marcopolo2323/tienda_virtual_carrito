@@ -24,9 +24,9 @@ router.post('/create-preference', authenticate, async (req, res) => {
       });
     }
 
-    // SOLUCIÓN: URLs hardcodeadas para evitar undefined
-    const FRONTEND_URL = 'http://localhost:3000';
-    const API_URL = 'http://localhost:5000';
+    // URLs dinámicas según el entorno
+    const FRONTEND_URL = process.env.FRONTEND_URL || 'https://tiendadiego.vercel.app';
+    const API_URL = process.env.API_URL || 'https://tienda-diego-qkm5.onrender.com';
 
     const preferenceData = {
       items: items.map(item => ({

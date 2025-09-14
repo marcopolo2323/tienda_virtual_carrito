@@ -124,8 +124,6 @@ const OrderSuccessPage = () => {
                     <td className="text-end">${order.shipping_cost.toFixed(2)}</td>
                   </tr>
                   <tr>
-                    <td colSpan="3" className="text-end"><strong>Tax</strong></td>
-                    <td className="text-end">${order.tax.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="text-end"><strong>Total</strong></td>

@@ -218,7 +218,6 @@ const createOrder = async (req, res) => {
       preference_id,
       subtotal, 
       shipping_cost, 
-      tax, 
       total, 
       status = 'pending' 
     } = req.body;
@@ -242,7 +241,7 @@ const createOrder = async (req, res) => {
       preference_id,
       subtotal,
       shipping_cost,
-      tax,
+      tax: 0, // IGV eliminado - siempre 0
       total,
       status,
       payment_status: 'pending'

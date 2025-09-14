@@ -49,7 +49,6 @@ const CheckoutPage = () => {
   const [orderSummary, setOrderSummary] = useState({
     subtotal: 0,
     shipping: 0,
-    tax: 0,
     total: 0
   });
 
@@ -71,14 +70,12 @@ const CheckoutPage = () => {
     // Calculate order summary
     const subtotal = total;
     const shipping = subtotal > 100 ? 0 : 15;
-    const tax = subtotal * 0.18;
-    const totalWithShippingAndTax = subtotal + shipping + tax;
+    const totalWithShipping = subtotal + shipping;
 
     setOrderSummary({
       subtotal,
       shipping,
-      tax,
-      total: totalWithShippingAndTax
+      total: totalWithShipping
     });
   }, [total]);
 
@@ -136,10 +133,16 @@ const CheckoutPage = () => {
 
       const response = await axios.post('/payment/create-preference', preferenceData);
       
-      if (response.data && response.data.id) {
+      console.log('Response completa:', response.data); // Debug
+      
+      if (response.data && response.data.data && response.data.data.id) {
+        setPreferenceId(response.data.data.id);
+        console.log('Preference creada exitosamente:', response.data.data.id); // Debug
+      } else if (response.data && response.data.id) {
         setPreferenceId(response.data.id);
-        console.log('Preference creada exitosamente:', response.data.id); // Debug
+        console.log('Preference creada exitosamente (formato alternativo):', response.data.id); // Debug
       } else {
+        console.error('Response data structure:', response.data);
         throw new Error('No se recibió preference_id válido');
       }
     } catch (err) {
@@ -220,7 +223,6 @@ const CheckoutPage = () => {
           preference_id: preferenceId,
           subtotal: orderSummary.subtotal,
           shipping_cost: orderSummary.shipping,
-          tax: orderSummary.tax,
           total: orderSummary.total,
           status: 'pending'
         };
@@ -253,7 +255,6 @@ const CheckoutPage = () => {
           payment_method: paymentMethod,
           subtotal: orderSummary.subtotal,
           shipping_cost: orderSummary.shipping,
-          tax: orderSummary.tax,
           total: orderSummary.total,
           status: 'pending'
         };
@@ -563,8 +564,6 @@ const CheckoutPage = () => {
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
-                  <span>IGV (18%):</span>
-                  <span>S/ {orderSummary.tax.toFixed(2)}</span>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between mb-3 fw-bold">

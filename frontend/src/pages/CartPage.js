@@ -247,7 +247,6 @@ const CartPage = () => {
                   <span>Calculated at checkout</span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
-                  <span>Tax:</span>
                   <span>Calculated at checkout</span>
                 </div>
                 <hr />
