@@ -423,7 +423,34 @@ const initializeApp = async () => {
       throw new Error('Database connection failed');
     }
     
-    // 2. Sincronizar modelos con la base de datos
+    // 2. Ejecutar migraciones necesarias
+    try {
+      console.log('🔄 Verificando migraciones...');
+      
+      // Verificar si payment_reference existe
+      const [results] = await sequelize.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'orders' 
+        AND column_name = 'payment_reference'
+      `);
+
+      if (results.length === 0) {
+        console.log('🔄 Ejecutando migración: Agregar payment_reference...');
+        await sequelize.query(`
+          ALTER TABLE orders 
+          ADD COLUMN payment_reference VARCHAR(100) NULL
+        `);
+        console.log('✅ Campo payment_reference agregado exitosamente');
+      } else {
+        console.log('✅ Campo payment_reference ya existe');
+      }
+    } catch (migrationError) {
+      console.error('❌ Error ejecutando migraciones:', migrationError.message);
+      // No lanzar error para no bloquear el inicio
+    }
+    
+    // 3. Sincronizar modelos con la base de datos
     const syncOptions = isDev ? { alter: true } : { alter: false };
     try {
       await sequelize.sync(syncOptions);
@@ -433,7 +460,7 @@ const initializeApp = async () => {
       throw new Error('Database synchronization failed');
     }
     
-    // 3. Iniciar servidor HTTP
+    // 4. Iniciar servidor HTTP
     const server = app.listen(PORT, () => {
       const bootTime = ((Date.now() - startTime) / 1000).toFixed(2);
       console.log(`✨ Aplicación iniciada en ${bootTime} segundos`);

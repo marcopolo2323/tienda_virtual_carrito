@@ -223,6 +223,36 @@ const createOrder = async (req, res) => {
       status = 'pending' 
     } = req.body;
     
+    // Logging para debugging
+    console.log('=== CREANDO ORDEN ===');
+    console.log('Payment method:', payment_method);
+    console.log('Subtotal:', subtotal);
+    console.log('Shipping cost:', shipping_cost);
+    console.log('Total:', total);
+    console.log('Shipping info:', shipping_info);
+    
+    // Validar campos obligatorios
+    if (!payment_method) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Método de pago es obligatorio' 
+      });
+    }
+    
+    if (!subtotal || subtotal <= 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Subtotal debe ser mayor a 0' 
+      });
+    }
+    
+    if (!total || total <= 0) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Total debe ser mayor a 0' 
+      });
+    }
+    
     // Convertir shipping_info a string para shipping_address
     let shipping_address = '';
     if (shipping_info) {
@@ -230,8 +260,13 @@ const createOrder = async (req, res) => {
         shipping_address = shipping_info;
       } else {
         // Crear string de dirección a partir del objeto
-        shipping_address = `${shipping_info.first_name} ${shipping_info.last_name}, ${shipping_info.address}, ${shipping_info.city}, ${shipping_info.state} ${shipping_info.zip_code}, ${shipping_info.country}`;
+        shipping_address = `${shipping_info.first_name || ''} ${shipping_info.last_name || ''}, ${shipping_info.address || ''}, ${shipping_info.city || ''}, ${shipping_info.state || ''} ${shipping_info.zip_code || ''}, ${shipping_info.country || ''}`;
       }
+    }
+    
+    // Si no hay dirección, usar una por defecto para contraentrega
+    if (!shipping_address.trim() && payment_method === 'cash') {
+      shipping_address = 'Dirección a confirmar - Contraentrega';
     }
     
     // Crear la orden
@@ -317,10 +352,14 @@ const createOrder = async (req, res) => {
     });
   } catch (error) {
     await transaction.rollback();
-    console.error('Error creating order:', error);
+    console.error('=== ERROR CREANDO ORDEN ===');
+    console.error('Error:', error.message);
+    console.error('Stack:', error.stack);
+    console.error('Body recibido:', req.body);
     
     // Manejo específico de errores de validación
     if (error.name === 'SequelizeValidationError') {
+      console.error('Errores de validación:', error.errors);
       return res.status(400).json({ 
         success: false,
         message: 'Datos de orden inválidos',
@@ -328,6 +367,16 @@ const createOrder = async (req, res) => {
           field: err.path,
           message: err.message
         }))
+      });
+    }
+    
+    // Manejo específico de errores de base de datos
+    if (error.name === 'SequelizeDatabaseError') {
+      console.error('Error de base de datos:', error.message);
+      return res.status(500).json({ 
+        success: false,
+        message: 'Error de base de datos al crear la orden',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
     
