@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
-import axios from 'axios';
+import axios from '../utils/axios';
 import StarRating from './StarRating';
 
 const ProductReviews = ({ productId }) => {

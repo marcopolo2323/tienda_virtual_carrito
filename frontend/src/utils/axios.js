@@ -14,7 +14,7 @@ const getApiBaseUrl = () => {
 
 // Crear instancia de axios con configuración
 const apiClient = axios.create({
-  baseURL: getApiBaseUrl(),
+  baseURL: getApiBaseUrl() + '/api',  // Agregar /api directamente a la baseURL
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -23,10 +23,9 @@ const apiClient = axios.create({
 
 // Función para hacer peticiones con URL base forzada
 const makeRequest = (method, url, data = null, config = {}) => {
-  // NO agregar /api aquí, el interceptor se encarga de eso
   const fullConfig = {
     ...config,
-    baseURL: getApiBaseUrl(),
+    baseURL: getApiBaseUrl() + '/api',  // Asegurar /api en la URL base
     url: url,
     method: method.toLowerCase()
   };
@@ -35,7 +34,7 @@ const makeRequest = (method, url, data = null, config = {}) => {
     fullConfig.data = data;
   }
   
-  console.log('🌐 Petición forzada:', method.toUpperCase(), getApiBaseUrl() + url);
+  console.log('🌐 Petición forzada:', method.toUpperCase(), getApiBaseUrl() + '/api' + url);
   return apiClient(fullConfig);
 };
 
@@ -44,19 +43,11 @@ console.log('🔧 API Client baseURL configurada:', apiClient.defaults.baseURL);
 console.log('🔧 NODE_ENV:', process.env.NODE_ENV);
 console.log('🔧 REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
 
-// Interceptor para agregar el token a las peticiones y asegurar URL base
+// Interceptor para agregar el token a las peticiones
 apiClient.interceptors.request.use(
   (config) => {
-    // Forzar la URL base
-    config.baseURL = getApiBaseUrl();
-    
-    // Agregar /api al inicio de todas las URLs (si no es una URL completa)
-    if (config.url && !config.url.startsWith('http')) {
-      // Si no empieza con /api, agregarlo
-      if (!config.url.startsWith('/api')) {
-        config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
-      }
-    }
+    // Asegurar que la URL base esté configurada correctamente
+    config.baseURL = getApiBaseUrl() + '/api';
     
     const token = localStorage.getItem('token');
     if (token) {

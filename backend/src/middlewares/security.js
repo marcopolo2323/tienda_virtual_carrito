@@ -16,13 +16,44 @@ const createRateLimit = (windowMs, max, message) => {
     message: { error: message },
     standardHeaders: true,
     legacyHeaders: false,
+    // Agregar logging en desarrollo
+    onLimitReached: (req, res, options) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`⚠️ Rate limit alcanzado para IP ${req.ip}: ${message}`);
+        console.warn(`⚠️ Límite: ${max} peticiones en ${windowMs/1000/60} minutos`);
+      }
+    }
   });
 };
 
-// Límites específicos por endpoint
-const authLimiter = createRateLimit(15 * 60 * 1000, 5, 'Demasiados intentos de login, intenta de nuevo en 15 minutos');
-const apiLimiter = createRateLimit(15 * 60 * 1000, 100, 'Demasiadas peticiones, intenta de nuevo más tarde');
-const strictLimiter = createRateLimit(15 * 60 * 1000, 10, 'Demasiadas peticiones, intenta de nuevo más tarde');
+// Límites específicos por endpoint - diferentes para desarrollo y producción
+const isDev = process.env.NODE_ENV === 'development';
+
+const authLimiter = createRateLimit(
+  15 * 60 * 1000, // 15 minutos
+  isDev ? 50 : 5, // 50 intentos en desarrollo, 5 en producción
+  'Demasiados intentos de login, intenta de nuevo en 15 minutos'
+);
+
+const apiLimiter = createRateLimit(
+  15 * 60 * 1000, // 15 minutos
+  isDev ? 1000 : 100, // 1000 peticiones en desarrollo, 100 en producción
+  'Demasiadas peticiones, intenta de nuevo más tarde'
+);
+
+const strictLimiter = createRateLimit(
+  15 * 60 * 1000, // 15 minutos
+  isDev ? 100 : 10, // 100 peticiones en desarrollo, 10 en producción
+  'Demasiadas peticiones, intenta de nuevo más tarde'
+);
+
+// Logging de configuración en desarrollo
+if (isDev) {
+  console.log('🔒 Rate limiting configurado para desarrollo:');
+  console.log(`   📊 API General: ${isDev ? 1000 : 100} peticiones/15min`);
+  console.log(`   🔐 Autenticación: ${isDev ? 50 : 5} intentos/15min`);
+  console.log(`   🚫 Estricto: ${isDev ? 100 : 10} peticiones/15min`);
+}
 
 // Security headers
 const securityHeaders = helmet({

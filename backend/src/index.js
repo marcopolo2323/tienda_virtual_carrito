@@ -214,12 +214,11 @@ app.get('/', (req, res) => {
     }
   });
 /**
- * Rutas de desarrollo y diagnóstico
- * Solo disponibles en entorno de desarrollo
+ * Rutas de diagnóstico
+ * Disponibles en todos los entornos
  */
-if (isDev) {
-  // Ruta de estado del sistema (health check)
-  app.get('/api/health', async (req, res) => {
+// Ruta de estado del sistema (health check)
+app.get('/api/health', async (req, res) => {
     try {
       // Verificar conexión a la base de datos
       await sequelize.authenticate({ timeout: 5000 });
@@ -248,6 +247,25 @@ if (isDev) {
         timestamp: new Date().toISOString()
       });
     }
+  });
+
+/**
+ * Rutas de desarrollo adicionales
+ * Solo disponibles en entorno de desarrollo
+ */
+if (isDev) {
+  // Ruta para resetear rate limits en desarrollo
+  app.post('/api/dev/reset-limits', (req, res) => {
+    // En desarrollo, podemos "resetear" mostrando información
+    res.json({
+      message: 'Rate limits en desarrollo son muy altos, no necesitan reset',
+      limits: {
+        api: '1000 peticiones/15min',
+        auth: '50 intentos/15min',
+        strict: '100 peticiones/15min'
+      },
+      tip: 'Si sigues teniendo problemas, reinicia el servidor backend'
+    });
   });
   
   // Ruta de prueba para uploads locales

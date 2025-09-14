@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert, Spinner, Row, Col, InputGroup } from 'react-bootstrap';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);

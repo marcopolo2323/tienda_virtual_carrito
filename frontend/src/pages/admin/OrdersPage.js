@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Table, Badge, Button, Modal, Form, Alert, Spinner, Row, Col, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);

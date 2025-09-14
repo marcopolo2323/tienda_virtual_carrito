@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Card, Row, Col, Badge, Button, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
+import axios from '../utils/axios';
 
 const OrderDetailPage = () => {
   const { orderId } = useParams();

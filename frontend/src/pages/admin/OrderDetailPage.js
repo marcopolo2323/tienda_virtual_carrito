@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge, Button, Table, Alert, Spinner } from 'react-bootstrap';
 import { FaArrowLeft, FaBox, FaTruck, FaCheck, FaTimes, FaClock } from 'react-icons/fa';
-import axios from 'axios';
+import axios from '../../utils/axios';
 import { formatDate, formatCurrency } from '../../utils/formatters';
 
 const OrderDetailPage = () => {

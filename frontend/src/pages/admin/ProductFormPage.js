@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Alert, Row, Col, Card } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 const ProductFormPage = () => {
   const { productId } = useParams();

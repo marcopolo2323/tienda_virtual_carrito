@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../utils/axios';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
