@@ -11,12 +11,18 @@ const OrderSuccessPage = () => {
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
+      if (!orderId || orderId === 'undefined') {
+        setError('No se encontró el ID de la orden. Verifica tu historial de pedidos.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`/orders/${orderId}`);
-        setOrder(response.data);
+        setOrder(response.data.order || response.data);
       } catch (err) {
         console.error('Error fetching order details:', err);
-        setError('Failed to load order details. Please check your order history.');
+        setError('Error al cargar los detalles de la orden. Verifica tu historial de pedidos.');
       } finally {
         setLoading(false);
       }

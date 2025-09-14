@@ -216,6 +216,7 @@ const createOrder = async (req, res) => {
       shipping_info, 
       payment_method, 
       preference_id,
+      payment_reference,
       subtotal, 
       shipping_cost, 
       total, 
@@ -239,12 +240,13 @@ const createOrder = async (req, res) => {
       shipping_address,
       payment_method,
       preference_id,
+      payment_reference,
       subtotal,
       shipping_cost,
       tax: 0, // IGV eliminado - siempre 0
       total,
       status,
-      payment_status: 'pending'
+      payment_status: payment_method === 'yape' ? 'pending' : 'pending'
     }, { transaction });
     
     // Obtener items del carrito del usuario

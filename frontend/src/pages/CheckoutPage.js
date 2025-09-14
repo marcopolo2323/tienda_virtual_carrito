@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import axios from '../utils/axios';
 import useCartStore from '../store/cartStore';
 import useAuthStore from '../store/authStore';
+import YapePayment from '../components/YapePayment';
 
 const CheckoutPage = () => {
   const { items, total, loading: cartLoading, clearCart } = useCartStore();
@@ -46,6 +47,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState('mercadopago');
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [yapePaymentData, setYapePaymentData] = useState(null);
   const [orderSummary, setOrderSummary] = useState({
     subtotal: 0,
     shipping: 0,
@@ -179,6 +181,49 @@ const CheckoutPage = () => {
     // Reset preference when payment method changes
     if (e.target.value !== 'mercadopago') {
       setPreferenceId('');
+    }
+    setError(null);
+    setYapePaymentData(null);
+  };
+
+  const handleYapePaymentComplete = async (paymentData) => {
+    setYapePaymentData(paymentData);
+    
+    try {
+      // Crear orden con pago Yape
+      const orderData = {
+        shipping_info: {
+          first_name: shippingInfo.firstName,
+          last_name: shippingInfo.lastName,
+          email: shippingInfo.email,
+          phone: shippingInfo.phone,
+          address: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          zip_code: shippingInfo.zipCode,
+          country: shippingInfo.country
+        },
+        payment_method: 'yape',
+        payment_reference: paymentData.reference,
+        subtotal: orderSummary.subtotal,
+        shipping_cost: orderSummary.shipping,
+        total: orderSummary.total,
+        status: 'pending'
+      };
+
+      console.log('Creando orden con Yape:', orderData);
+
+      const response = await axios.post('/orders', orderData);
+      
+      // Limpiar carrito
+      clearCart();
+      
+      // Redirigir a página de éxito
+      navigate(`/order-success/${response.data.order.id}`);
+      
+    } catch (err) {
+      console.error('Error creating order with Yape:', err);
+      setError(`Error al procesar el pago: ${err.response?.data?.message || err.message}`);
     }
   };
 
@@ -482,6 +527,35 @@ const CheckoutPage = () => {
                           </small>
                         </div>
                       )}
+                    </div>
+                  )}
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Check
+                    type="radio"
+                    id="yape-payment"
+                    label={
+                      <div className="d-flex align-items-center">
+                        <span className="me-2">Yape</span>
+                        <small className="text-muted">(Pago directo con QR)</small>
+                      </div>
+                    }
+                    name="paymentMethod"
+                    value="yape"
+                    checked={paymentMethod === 'yape'}
+                    onChange={handlePaymentMethodChange}
+                  />
+                  
+                  {paymentMethod === 'yape' && (
+                    <div className="mt-3">
+                      <YapePayment 
+                        orderData={{
+                          id: `temp_${Date.now()}`,
+                          total: orderSummary.total
+                        }}
+                        onPaymentComplete={handleYapePaymentComplete}
+                      />
                     </div>
                   )}
                 </Form.Group>

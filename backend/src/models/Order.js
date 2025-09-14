@@ -99,6 +99,10 @@ Order.init({
     type: DataTypes.STRING(100),
     allowNull: true
   },
+  payment_reference: {
+    type: DataTypes.STRING(100),
+    allowNull: true
+  },
   shipping_cost: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true,
