@@ -215,11 +215,21 @@ const CheckoutPage = () => {
 
       const response = await axios.post('/orders', orderData);
       
+      console.log('=== RESPUESTA DE ORDEN YAPE ===');
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      console.log('Order ID:', response.data?.order?.id);
+      
       // Limpiar carrito
       clearCart();
       
       // Redirigir a página de éxito
-      navigate(`/order-success/${response.data.order.id}`);
+      if (response.data?.order?.id) {
+        navigate(`/order-success/${response.data.order.id}`);
+      } else {
+        console.error('No se recibió ID de orden válido para Yape');
+        setError('No se pudo obtener el ID de la orden. Verifica tu historial de pedidos.');
+      }
       
     } catch (err) {
       console.error('Error creating order with Yape:', err);
@@ -306,10 +316,21 @@ const CheckoutPage = () => {
 
         const response = await axios.post('/orders', orderData);
         
+        console.log('=== RESPUESTA DE ORDEN ===');
+        console.log('Response status:', response.status);
+        console.log('Response data:', response.data);
+        console.log('Order ID:', response.data?.order?.id);
+        
         // El carrito se limpia automáticamente en el backend
         // Solo limpiar el estado local si es necesario
         clearCart();
-        navigate(`/order-success/${response.data.order.id}`);
+        
+        if (response.data?.order?.id) {
+          navigate(`/order-success/${response.data.order.id}`);
+        } else {
+          console.error('No se recibió ID de orden válido');
+          setError('No se pudo obtener el ID de la orden. Verifica tu historial de pedidos.');
+        }
       }
     } catch (err) {
       console.error('Error processing order:', err);

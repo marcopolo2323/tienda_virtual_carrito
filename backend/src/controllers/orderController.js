@@ -339,7 +339,13 @@ const createOrder = async (req, res) => {
     
     await transaction.commit();
     
-    res.status(201).json({
+    console.log('=== ORDEN CREADA EXITOSAMENTE ===');
+    console.log('Order ID:', order.id);
+    console.log('Order total:', order.total);
+    console.log('Order status:', order.status);
+    console.log('Payment status:', order.payment_status);
+    
+    const responseData = {
       success: true,
       message: 'Orden creada exitosamente',
       order: {
@@ -349,7 +355,12 @@ const createOrder = async (req, res) => {
         payment_status: order.payment_status,
         created_at: order.created_at
       }
-    });
+    };
+    
+    console.log('=== RESPUESTA ENVIADA ===');
+    console.log('Response data:', JSON.stringify(responseData, null, 2));
+    
+    res.status(201).json(responseData);
   } catch (error) {
     await transaction.rollback();
     console.error('=== ERROR CREANDO ORDEN ===');
