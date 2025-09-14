@@ -100,6 +100,10 @@ const getAllOrders = async (req, res) => {
  */
 const getUserOrders = async (req, res) => {
   try {
+    console.log('=== GET USER ORDERS ===');
+    console.log('User ID:', req.user?.id);
+    console.log('Query params:', req.query);
+    
     const { page = 1, limit = 10, status, sort_by = 'created_at', sort_order = 'DESC' } = req.query;
     
     // Validar parámetros de paginación
@@ -135,6 +139,7 @@ const getUserOrders = async (req, res) => {
     const sortDirection = sort_order === 'ASC' ? 'ASC' : 'DESC';
     
     // Obtener órdenes del usuario con paginación
+    console.log('Where conditions:', whereConditions);
     const { count, rows: orders } = await Order.findAndCountAll({
       where: whereConditions,
       include: [
@@ -147,6 +152,11 @@ const getUserOrders = async (req, res) => {
       offset,
       order: [[sortField, sortDirection]]
     });
+    
+    console.log('=== ORDERS FOUND ===');
+    console.log('Total count:', count);
+    console.log('Orders found:', orders.length);
+    console.log('Orders data:', orders.map(o => ({ id: o.id, user_id: o.user_id, status: o.status })));
     
     res.status(200).json({
       success: true,

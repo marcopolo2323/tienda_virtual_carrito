@@ -29,11 +29,21 @@ const OrdersPage = () => {
     }
 
     try {
-      console.log('Fetching orders...', { isAuthenticated, currentUser, token: !!token });
+      console.log('=== FETCHING ORDERS ===');
+      console.log('isAuthenticated:', isAuthenticated);
+      console.log('currentUser:', currentUser);
+      console.log('token exists:', !!token);
+      console.log('user_id from token:', currentUser?.id);
+      
       setLoading(true);
       const response = await axios.get('/orders/my-orders');
-      console.log('Orders fetched successfully:', response.data);
-      setOrders(response.data);
+      console.log('=== ORDERS RESPONSE ===');
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      console.log('Orders array:', response.data.orders);
+      console.log('Orders count:', response.data.orders?.length);
+      
+      setOrders(response.data.orders || response.data);
       setError(null);
     } catch (err) {
       console.error('Error fetching orders:', err);
@@ -163,10 +173,10 @@ const OrdersPage = () => {
               <tr key={order.id}>
                 <td>#{order.id}</td>
                 <td>{new Date(order.created_at).toLocaleDateString()}</td>
-                <td>${order.total.toFixed(2)}</td>
+                <td>${parseFloat(order.total || 0).toFixed(2)}</td>
                 <td>{getStatusBadge(order.status)}</td>
                 <td>
-                  <Link to={`/order/${order.id}`}>
+                  <Link to={`/orders/${order.id}`}>
                     <Button variant="outline-primary" size="sm">Ver Detalles</Button>
                   </Link>
                 </td>
