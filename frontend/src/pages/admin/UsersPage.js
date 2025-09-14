@@ -271,7 +271,7 @@ const UsersPage = () => {
         {/* Edit User Modal */}
         <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit User</Modal.Title>
+            <Modal.Title>Editar Usuario</Modal.Title>
           </Modal.Header>
           <Form onSubmit={handleEditSubmit}>
             <Modal.Body>

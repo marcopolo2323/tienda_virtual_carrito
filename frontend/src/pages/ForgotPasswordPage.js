@@ -39,7 +39,7 @@ const ForgotPasswordPage = () => {
             <Card.Body className="p-4 p-md-5">
               <div className="text-center mb-4">
                 <h2 className="mb-1">Forgot Password</h2>
-                <p className="text-muted">Enter your email to receive password reset instructions</p>
+                <p className="text-muted">Ingresa tu email para recibir instrucciones de restablecimiento de contraseña</p>
               </div>
 
               {message.text && (
@@ -55,7 +55,7 @@ const ForgotPasswordPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder="Ingresa tu email"
                     required
                   />
                 </Form.Group>

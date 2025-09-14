@@ -72,7 +72,7 @@ const ProductDetailPage = () => {
     return (
       <Container className="py-5 text-center">
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Cargando...</span>
         </div>
       </Container>
     );
@@ -84,7 +84,7 @@ const ProductDetailPage = () => {
         <Alert variant="danger">{error}</Alert>
         <div className="text-center mt-3">
           <Link to="/products">
-            <Button variant="primary">Back to Products</Button>
+            <Button variant="primary">Volver a Productos</Button>
           </Link>
         </div>
       </Container>
@@ -97,7 +97,7 @@ const ProductDetailPage = () => {
         <Alert variant="warning">Product not found</Alert>
         <div className="text-center mt-3">
           <Link to="/products">
-            <Button variant="primary">Back to Products</Button>
+            <Button variant="primary">Volver a Productos</Button>
           </Link>
         </div>
       </Container>
@@ -227,7 +227,7 @@ const ProductDetailPage = () => {
                     </Card.Text>
                     <div className="mt-auto">
                       <Link to={`/products/${relatedProduct.id}`}>
-                        <Button variant="outline-primary" className="w-100">View Details</Button>
+                        <Button variant="outline-primary" className="w-100">Ver Detalles</Button>
                       </Link>
                     </div>
                   </Card.Body>

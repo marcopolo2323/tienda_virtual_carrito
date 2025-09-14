@@ -85,11 +85,11 @@ const OrdersPage = () => {
       case 'pending':
         return <Badge bg="warning">Pending</Badge>;
       case 'processing':
-        return <Badge bg="info">Processing</Badge>;
+        return <Badge bg="info">Procesando</Badge>;
       case 'shipped':
-        return <Badge bg="primary">Shipped</Badge>;
+        return <Badge bg="primary">Enviado</Badge>;
       case 'delivered':
-        return <Badge bg="success">Delivered</Badge>;
+        return <Badge bg="success">Entregado</Badge>;
       case 'cancelled':
         return <Badge bg="danger">Cancelled</Badge>;
       default:
@@ -167,7 +167,7 @@ const OrdersPage = () => {
                 <td>{getStatusBadge(order.status)}</td>
                 <td>
                   <Link to={`/order/${order.id}`}>
-                    <Button variant="outline-primary" size="sm">View Details</Button>
+                    <Button variant="outline-primary" size="sm">Ver Detalles</Button>
                   </Link>
                 </td>
               </tr>

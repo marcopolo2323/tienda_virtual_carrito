@@ -119,7 +119,7 @@ const RegisterPage = () => {
                       <Form.Control
                         type="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder="Ingresa tu email"
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -176,7 +176,7 @@ const RegisterPage = () => {
                       <Form.Control
                         type="text"
                         name="firstName"
-                        placeholder="Enter your first name"
+                        placeholder="Ingresa tu nombre"
                         value={formData.firstName}
                         onChange={handleChange}
                         required
@@ -192,7 +192,7 @@ const RegisterPage = () => {
                       <Form.Control
                         type="text"
                         name="lastName"
-                        placeholder="Enter your last name"
+                        placeholder="Ingresa tu apellido"
                         value={formData.lastName}
                         onChange={handleChange}
                         required
@@ -209,7 +209,7 @@ const RegisterPage = () => {
                   <Form.Control
                     type="tel"
                     name="phone"
-                    placeholder="Enter your phone number"
+                    placeholder="Ingresa tu número de teléfono"
                     value={formData.phone}
                     onChange={handleChange}
                   />

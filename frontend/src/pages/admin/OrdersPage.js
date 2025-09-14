@@ -97,13 +97,13 @@ const OrdersPage = () => {
       case 'pending':
         return <Badge bg="warning">Pending</Badge>;
       case 'processing':
-        return <Badge bg="info">Processing</Badge>;
+        return <Badge bg="info">Procesando</Badge>;
       case 'shipped':
-        return <Badge bg="primary">Shipped</Badge>;
+        return <Badge bg="primary">Enviado</Badge>;
       case 'delivered':
-        return <Badge bg="success">Delivered</Badge>;
+        return <Badge bg="success">Entregado</Badge>;
       case 'cancelled':
-        return <Badge bg="danger">Cancelled</Badge>;
+        return <Badge bg="danger">Cancelado</Badge>;
       default:
         return <Badge bg="secondary">{status}</Badge>;
     }
@@ -148,10 +148,10 @@ const OrdersPage = () => {
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="processing">Procesando</option>
+                <option value="shipped">Enviado</option>
+                <option value="delivered">Entregado</option>
+                <option value="cancelled">Cancelado</option>
               </Form.Select>
             </Col>
             <Col md={3}>
@@ -198,7 +198,7 @@ const OrdersPage = () => {
           </div>
         ) : !orders || orders.length === 0 ? (
           <Alert variant="info">
-            No orders found. {searchTerm || filterStatus || dateRange.start || dateRange.end ? 'Try adjusting your search filters.' : ''}
+            No se encontraron pedidos. {searchTerm || filterStatus || dateRange.start || dateRange.end ? 'Intenta ajustar tus filtros de búsqueda.' : ''}
           </Alert>
         ) : (
           <>
@@ -298,7 +298,7 @@ const OrdersPage = () => {
         {/* Update Status Modal */}
         <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Update Order Status</Modal.Title>
+            <Modal.Title>Actualizar Estado del Pedido</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {statusError && <Alert variant="danger">{statusError}</Alert>}
@@ -313,10 +313,10 @@ const OrdersPage = () => {
                 onChange={(e) => setNewStatus(e.target.value)}
               >
                 <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="processing">Procesando</option>
+                <option value="shipped">Enviado</option>
+                <option value="delivered">Entregado</option>
+                <option value="cancelled">Cancelado</option>
               </Form.Select>
             </Form.Group>
           </Modal.Body>

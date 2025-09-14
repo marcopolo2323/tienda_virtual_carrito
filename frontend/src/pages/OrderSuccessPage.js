@@ -68,7 +68,7 @@ const OrderSuccessPage = () => {
           <Card.Body>
             <div className="row mb-4">
               <div className="col-md-6">
-                <h5>Shipping Information</h5>
+                <h5>Información de Envío</h5>
                 <p className="mb-1">
                   {order.shipping_info.first_name} {order.shipping_info.last_name}
                 </p>
@@ -80,7 +80,7 @@ const OrderSuccessPage = () => {
                 <p className="mb-1">{order.shipping_info.phone}</p>
               </div>
               <div className="col-md-6">
-                <h5>Payment Information</h5>
+                <h5>Información de Pago</h5>
                 <p className="mb-1">
                   <strong>Payment Method:</strong> {order.payment_method === 'card' ? 'Credit Card' : order.payment_method === 'cash' ? 'Cash on Delivery' : order.payment_method}
                 </p>
@@ -93,7 +93,7 @@ const OrderSuccessPage = () => {
               </div>
             </div>
 
-            <h5>Order Items</h5>
+            <h5>Artículos del Pedido</h5>
             <div className="table-responsive">
               <table className="table">
                 <thead>

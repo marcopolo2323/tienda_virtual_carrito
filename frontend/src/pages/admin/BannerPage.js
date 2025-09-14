@@ -62,7 +62,7 @@ const BannersPage = () => {
         <Container fluid className="py-4">
           <div className="text-center">
             <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading banners...</span>
+              <span className="visually-hidden">Cargando banners...</span>
             </Spinner>
           </div>
         </Container>
@@ -248,7 +248,7 @@ const BannersPage = () => {
                   <div className="text-center py-5">
                     <i className="bi bi-images text-muted" style={{ fontSize: '48px' }}></i>
                     <h5 className="text-muted mt-3">No Banners Found</h5>
-                    <p className="text-muted">Create your first banner to get started.</p>
+                    <p className="text-muted">Crea tu primer banner para comenzar.</p>
                     <Link to="/admin/banners/new" className="btn btn-primary">
                       <i className="bi bi-plus-circle me-2"></i>
                       Create Banner

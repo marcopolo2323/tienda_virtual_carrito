@@ -226,7 +226,7 @@ const OrderDetailPage = () => {
                       <FaTimes />
                     </div>
                     <div className="timeline-content">
-                      <h6>Cancelled</h6>
+                      <h6>Cancelado</h6>
                       <p>{formatDate(order.cancelled_at)}</p>
                     </div>
                   </div>

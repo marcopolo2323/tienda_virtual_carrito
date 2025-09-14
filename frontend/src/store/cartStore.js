@@ -144,7 +144,7 @@ const useCartStore = create((set, get) => ({
         total: 0,
         itemCount: 0,
         loading: false,
-        error: 'Please log in to view your cart'
+        error: 'Por favor inicia sesión para ver tu carrito'
       });
       return;
     }
@@ -224,7 +224,7 @@ const useCartStore = create((set, get) => ({
           total: 0,
           itemCount: 0,
           loading: false,
-          error: 'Please log in to view your cart'
+          error: 'Por favor inicia sesión para ver tu carrito'
         });
       } else {
         set({
@@ -359,7 +359,7 @@ const useCartStore = create((set, get) => ({
         await get().fetchCart();
       }
       
-      toast.success('Item added to cart!');
+      toast.success('¡Producto agregado al carrito!');
       console.log('✅ Producto agregado exitosamente');
       return true;
     } catch (err) {
@@ -375,14 +375,14 @@ const useCartStore = create((set, get) => ({
       
       if (err.response?.status === 401 || err.response?.status === 403) {
         console.log('❌ Error de autenticación en addToCart');
-        toast.error('Please log in to add items to cart');
+        toast.error('Por favor inicia sesión para agregar productos al carrito');
         localStorage.removeItem('token'); // Limpiar token inválido
       } else if (err.response?.status === 400) {
         console.log('❌ Error de request en addToCart');
-        toast.error(err.response?.data?.message || 'Product not available');
+        toast.error(err.response?.data?.message || 'Producto no disponible');
       } else {
         console.log('❌ Error genérico en addToCart');
-        toast.error(err.response?.data?.message || 'Failed to add item to cart');
+        toast.error(err.response?.data?.message || 'Error al agregar producto al carrito');
       }
       
       set({
@@ -479,10 +479,10 @@ const useCartStore = create((set, get) => ({
       console.error('Error updating cart:', err);
       
       if (err.response?.status === 401 || err.response?.status === 403) {
-        toast.error('Please log in to update cart');
+        toast.error('Por favor inicia sesión para actualizar el carrito');
         localStorage.removeItem('token'); // Limpiar token inválido
       } else {
-        toast.error(err.response?.data?.message || 'Failed to update cart');
+        toast.error(err.response?.data?.message || 'Error al actualizar el carrito');
       }
       set({
         loading: false,
@@ -560,15 +560,15 @@ const useCartStore = create((set, get) => ({
         await get().fetchCart();
       }
       
-      toast.success('Item removed from cart!');
+      toast.success('¡Producto eliminado del carrito!');
     } catch (err) {
       console.error('Error removing from cart:', err);
       
       if (err.response?.status === 401 || err.response?.status === 403) {
-        toast.error('Please log in to modify cart');
+        toast.error('Por favor inicia sesión para modificar el carrito');
         localStorage.removeItem('token'); // Limpiar token inválido
       } else {
-        toast.error(err.response?.data?.message || 'Failed to remove item from cart');
+        toast.error(err.response?.data?.message || 'Error al eliminar producto del carrito');
       }
       set({
         loading: false,
@@ -623,10 +623,10 @@ const useCartStore = create((set, get) => ({
       console.error('Error clearing cart:', err);
       
       if (err.response?.status === 401 || err.response?.status === 403) {
-        toast.error('Please log in to clear cart');
+        toast.error('Por favor inicia sesión para vaciar el carrito');
         localStorage.removeItem('token'); // Limpiar token inválido
       } else {
-        toast.error(err.response?.data?.message || 'Failed to clear cart');
+        toast.error(err.response?.data?.message || 'Error al vaciar el carrito');
       }
       set({
         loading: false,

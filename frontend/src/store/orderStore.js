@@ -15,7 +15,7 @@ const useOrderStore = create((set) => ({
     set({ loading: true });
     try {
       const response = await axios.post('/orders', orderData);
-      toast.success('Order placed successfully!');
+      toast.success('¡Orden realizada exitosamente!');
       // Llamar a clearCart del cartStore
       useCartStore.getState().clearCart();
       set({

@@ -77,14 +77,14 @@ const useAuthStore = create((set, get) => ({
     set({ loading: true });
     try {
       const response = await axios.post('/auth/register', userData);
-      toast.success('Registration successful! Please log in.');
+      toast.success('¡Registro exitoso! Por favor inicia sesión.');
       set({ loading: false, error: null });
       return response.data;
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed');
+      toast.error(err.response?.data?.message || 'Error en el registro');
       set({ 
         loading: false, 
-        error: err.response?.data?.message || 'Registration failed' 
+        error: err.response?.data?.message || 'Error en el registro' 
       });
       return null;
     }
@@ -111,13 +111,13 @@ const useAuthStore = create((set, get) => ({
       const cartStore = require('./cartStore').default.getState();
       await cartStore.initializeCart();
       
-      toast.success('Login successful!');
+      toast.success('¡Inicio de sesión exitoso!');
       return response.data;
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
+      toast.error(err.response?.data?.message || 'Error al iniciar sesión');
       set({ 
         loading: false, 
-        error: err.response?.data?.message || 'Login failed' 
+        error: err.response?.data?.message || 'Error al iniciar sesión' 
       });
       return null;
     }
@@ -197,7 +197,7 @@ const useAuthStore = create((set, get) => ({
       
       console.log('Sending password change data:', backendData);
       const response = await axios.put('/auth/change-password', backendData);
-      toast.success('Password changed successfully! Please log in again.');
+      toast.success('¡Contraseña cambiada exitosamente! Por favor inicia sesión de nuevo.');
       set({ 
         loading: false,
         error: null
@@ -210,13 +210,13 @@ const useAuthStore = create((set, get) => ({
       
       return response.data;
     } catch (err) {
-      let errorMessage = 'Failed to change password';
+      let errorMessage = 'Error al cambiar la contraseña';
       
       // Manejar errores específicos
       if (err.response?.status === 400) {
-        errorMessage = err.response.data?.message || 'Current password is incorrect';
+        errorMessage = err.response.data?.message || 'La contraseña actual es incorrecta';
       } else if (err.response?.status === 422) {
-        errorMessage = 'Invalid password format';
+        errorMessage = 'Formato de contraseña inválido';
       }
       
       toast.error(errorMessage);

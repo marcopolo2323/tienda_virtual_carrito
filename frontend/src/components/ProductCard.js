@@ -61,7 +61,7 @@ const ProductCard = ({ product }) => {
           {imageLoading && !imageError && (
             <div className="position-absolute top-50 start-50 translate-middle">
               <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading image...</span>
+                <span className="visually-hidden">Cargando imagen...</span>
               </div>
             </div>
           )}

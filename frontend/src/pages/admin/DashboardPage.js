@@ -91,7 +91,7 @@ const DashboardPage = () => {
           <div className="text-center">
             <h2 className="mb-4">Dashboard</h2>
             <Spinner animation="border" role="status" variant="primary">
-              <span className="visually-hidden">Loading dashboard data...</span>
+              <span className="visually-hidden">Cargando datos del panel...</span>
             </Spinner>
             <p className="mt-3">Loading dashboard data...</p>
           </div>
@@ -203,7 +203,7 @@ const DashboardPage = () => {
                 </h3>
                 <p className="text-muted mb-0 small">Total Users</p>
                 <Link to="/admin/users" className="stretched-link text-decoration-none">
-                  <small>View Details <i className="bi bi-arrow-right"></i></small>
+                  <small>Ver Detalles <i className="bi bi-arrow-right"></i></small>
                 </Link>
               </Card.Body>
             </Card>
@@ -221,7 +221,7 @@ const DashboardPage = () => {
                 </h3>
                 <p className="text-muted mb-0 small">Total Products</p>
                 <Link to="/admin/products" className="stretched-link text-decoration-none">
-                  <small>View Details <i className="bi bi-arrow-right"></i></small>
+                  <small>Ver Detalles <i className="bi bi-arrow-right"></i></small>
                 </Link>
               </Card.Body>
             </Card>
@@ -239,7 +239,7 @@ const DashboardPage = () => {
                 </h3>
                 <p className="text-muted mb-0 small">Total Orders</p>
                 <Link to="/admin/orders" className="stretched-link text-decoration-none">
-                  <small>View Details <i className="bi bi-arrow-right"></i></small>
+                  <small>Ver Detalles <i className="bi bi-arrow-right"></i></small>
                 </Link>
               </Card.Body>
             </Card>
@@ -383,7 +383,7 @@ const DashboardPage = () => {
                                 to={`/admin/products/edit/${product.id}`} 
                                 className="btn btn-sm btn-outline-primary"
                               >
-                                <i className="bi bi-pencil me-1"></i>Update
+                                <i className="bi bi-pencil me-1"></i>Actualizar
                               </Link>
                             </td>
                           </tr>

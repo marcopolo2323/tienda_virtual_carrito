@@ -58,7 +58,7 @@ const ProductFormPage = () => {
         setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       } catch (err) {
         console.error('Error fetching categories:', err);
-        setError('Failed to load categories. Please try again.');
+        setError('Error al cargar categorías. Por favor intenta de nuevo.');
         setCategories([]);
       }
     };
@@ -94,7 +94,7 @@ const ProductFormPage = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching product details:', err);
-      setError('Failed to load product details. Please try again.');
+      setError('Error al cargar detalles del producto. Por favor intenta de nuevo.');
       setLoading(false);
     }
   };
@@ -144,14 +144,14 @@ const ProductFormPage = () => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        setSuccess('Product updated successfully!');
+        setSuccess('¡Producto actualizado exitosamente!');
       } else {
         await axios.post('/products', productFormData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        setSuccess('Product created successfully!');
+        setSuccess('¡Producto creado exitosamente!');
         
         // Reset form in create mode
         if (!isEditMode) {
@@ -168,7 +168,7 @@ const ProductFormPage = () => {
       }
     } catch (err) {
       console.error('Error saving product:', err);
-      setError(err.response?.data?.message || 'Failed to save product. Please try again.');
+      setError(err.response?.data?.message || 'Error al guardar producto. Por favor intenta de nuevo.');
     } finally {
       setSaving(false);
       
@@ -187,7 +187,7 @@ const ProductFormPage = () => {
         <Container fluid className="py-4">
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">Cargando...</span>
             </div>
           </div>
         </Container>

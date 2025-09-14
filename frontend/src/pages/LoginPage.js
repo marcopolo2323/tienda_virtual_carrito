@@ -65,7 +65,7 @@ const LoginPage = () => {
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Ingresa tu email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -84,7 +84,7 @@ const LoginPage = () => {
                   </div>
                   <Form.Control
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="Ingresa tu contraseña"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required

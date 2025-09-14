@@ -100,15 +100,15 @@ const CartPage = () => {
 
   return (
     <Container className="py-4">
-      <h1 className="mb-4">Your Shopping Cart</h1>
+      <h1 className="mb-4">Tu Carrito de Compras</h1>
 
       {items.length === 0 ? (
         <div className="text-center py-5">
           <i className="bi bi-cart3 display-1 text-muted mb-3"></i>
-          <h3>Your cart is empty</h3>
-          <p className="mb-4">Looks like you haven't added any products to your cart yet.</p>
+          <h3>Tu carrito está vacío</h3>
+          <p className="mb-4">Parece que aún no has agregado ningún producto a tu carrito.</p>
           <Link to="/products">
-            <Button variant="primary" size="lg">Continue Shopping</Button>
+            <Button variant="primary" size="lg">Continuar Comprando</Button>
           </Link>
         </div>
       ) : (
@@ -262,13 +262,13 @@ const CartPage = () => {
                   className="w-100 mb-3 checkout-btn"
                   onClick={handleCheckout}
                 >
-                  {isAuthenticated ? 'Proceed to Checkout' : 'Login to Checkout'}
+                  {isAuthenticated ? 'Proceder al Checkout' : 'Iniciar Sesión para Checkout'}
                 </Button>
 
                 <div className="text-center">
                   <Link to="/products" className="text-decoration-none">
                     <i className="bi bi-arrow-left me-1"></i>
-                    Continue Shopping
+                    Continuar Comprando
                   </Link>
                 </div>
               </Card.Body>
