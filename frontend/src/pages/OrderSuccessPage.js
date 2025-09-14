@@ -127,29 +127,29 @@ const OrderSuccessPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map(item => (
+                  {(order.OrderItems || order.items || []).map(item => (
                     <tr key={item.id}>
-                      <td>{item.product_name}</td>
+                      <td>{item.Product?.name || item.product_name || 'Producto'}</td>
                       <td>{item.quantity}</td>
-                      <td className="text-end">${item.price.toFixed(2)}</td>
-                      <td className="text-end">${(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="text-end">${parseFloat(item.price).toFixed(2)}</td>
+                      <td className="text-end">${(parseFloat(item.price) * item.quantity).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr>
                     <td colSpan="3" className="text-end"><strong>Subtotal</strong></td>
-                    <td className="text-end">${order.subtotal.toFixed(2)}</td>
+                    <td className="text-end">${parseFloat(order.subtotal || 0).toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="text-end"><strong>Shipping</strong></td>
-                    <td className="text-end">${order.shipping_cost.toFixed(2)}</td>
+                    <td className="text-end">${parseFloat(order.shipping_cost || 0).toFixed(2)}</td>
                   </tr>
                   <tr>
                   </tr>
                   <tr>
                     <td colSpan="3" className="text-end"><strong>Total</strong></td>
-                    <td className="text-end"><strong>${order.total.toFixed(2)}</strong></td>
+                    <td className="text-end"><strong>${parseFloat(order.total || 0).toFixed(2)}</strong></td>
                   </tr>
                 </tfoot>
               </table>
