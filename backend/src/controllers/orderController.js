@@ -2,7 +2,7 @@
  * Controlador de órdenes
  * Maneja operaciones CRUD para órdenes y sus items
  */
-const { Order, OrderItem, Product, User } = require('../models');
+const { Order, OrderItem, Product, User, Cart, CartItem } = require('../models');
 const sequelize = require('../config/database');
 const { 
   handleSequelizeError, 
@@ -223,10 +223,21 @@ const createOrder = async (req, res) => {
       status = 'pending' 
     } = req.body;
     
+    // Convertir shipping_info a string para shipping_address
+    let shipping_address = '';
+    if (shipping_info) {
+      if (typeof shipping_info === 'string') {
+        shipping_address = shipping_info;
+      } else {
+        // Crear string de dirección a partir del objeto
+        shipping_address = `${shipping_info.first_name} ${shipping_info.last_name}, ${shipping_info.address}, ${shipping_info.city}, ${shipping_info.state} ${shipping_info.zip_code}, ${shipping_info.country}`;
+      }
+    }
+    
     // Crear la orden
     const order = await Order.create({
       user_id: req.user.id,
-      shipping_info: JSON.stringify(shipping_info),
+      shipping_address,
       payment_method,
       preference_id,
       subtotal,
@@ -306,10 +317,26 @@ const createOrder = async (req, res) => {
   } catch (error) {
     await transaction.rollback();
     console.error('Error creating order:', error);
+    
+    // Manejo específico de errores de validación
+    if (error.name === 'SequelizeValidationError') {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Datos de orden inválidos',
+        errors: error.errors.map(err => ({
+          field: err.path,
+          message: err.message
+        }))
+      });
+    }
+    
     res.status(500).json({ 
       success: false,
       message: 'Error al crear la orden',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: process.env.NODE_ENV === 'development' ? {
+        message: error.message,
+        stack: error.stack
+      } : undefined
     });
   }
 };
